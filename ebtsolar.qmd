@@ -1,0 +1,455 @@
+---
+title: "Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction"
+subtitle: "다중척도워크샵2026"
+author: "최규빈"
+institute: "전북대학교 통계학과"
+date: "2026-01-07"
+bibliography: ref.bib
+format:
+  revealjs:
+    theme: custom.scss
+    slide-number: true
+    chalkboard: false
+    preview-links: auto
+    transition: none
+    width: 1600
+    height: 900
+    smaller: true
+    scrollable: true
+    fig-format: png
+    fig-dpi: 300
+    auto-stretch: true
+    html-math-method: mathjax
+---
+
+## 태양복사량 시계열의 특성
+
+:::: {.columns}
+::: {.column width="60%"}
+![**Figure:** Example of solar irradiance time series observed in Seoul. Strong daily periodicity coexists with irregular fluctuations caused by weather conditions.](figs/fig1.png){width="100%"}
+:::
+::: {.column width="40%"}
+**강한 주기성을 가지나, 분석이 까다로운 구조**
+
+1. **Sinusoid가 아님**: 반파(half-wave) 형태 → Fourier 기반 분해법 적용에 한계
+
+2. **정확한 주기가 아님**: 계절에 따라 일출·일몰 시각이 변동 → 엄밀한 24시간 주기가 아님
+
+**야간 영값(zero-inflation) 문제**
+
+- 밤 시간대 복사량이 **구조적으로 0** → 일반적인 시계열 분석 기법 적용이 제한됨
+- AR 모형, LSTM 등 연속적 시계열을 가정하는 구조 적용이 어려움
+:::
+::::
+
+## 문제: 자료의 고유한 특성을 반영해야 성능 개선이 가능
+
+> **핵심**: 태양복사량의 구조적 특성(일일 주기성, 야간 영값)을 고려하지 않으면 예측 성능 향상에 근본적 한계가 존재
+
+**전통적 시계열 모형의 한계**
+
+- **통계적 모형**: ARMA, ARIMA 등은 야간 영값 구간으로 인해 정상성(stationarity) 가정 위배
+- **딥러닝 모형**: TCN, LSTM, CNN-LSTM 등도 연속적 시계열 구조를 가정 → 영값 구간에서 학습 왜곡 발생
+
+**야간 영값 구간을 제외하고 예측한다면?**
+
+1. **계절성 문제**: 일출·일몰 시각이 계절마다 상이 → "19시~06시" 일괄 제외 **불가능**
+2. **기상 조건 혼동**: 복사량 ≈ 0인 구간 제외 시 → **흐린 날의 저복사량도 함께 제외**될 위험
+
+**일일 주기 성분(daily effect)을 분해한다면?**
+
+- STL, EMD, Wavelet 등 기존 분해법으로는 일주기 성분이 **명확히 분리되지 않음**
+
+## 해결책: 계층적 모형(Hierarchical Model)으로의 발상 전환
+
+> **핵심 관점**: 단순히 "이전 시점 → 다음 시점"의 직접 예측이 아니라, **"일출 여부 판단 + 조건부 복사량 예측"**의 이중 구조
+
+**모델링 전략**
+
+- 다음 시점의 **일출 여부(sunrise indicator)**를 먼저 판단
+- 일출 조건 하에서 **태양복사량의 조건부 분포(conditional distribution)**를 모델링
+
+**선행 연구** [@lee2021short]
+
+- 일출 여부를 나타내는 **잠재변수(latent variable)**를 도입한 혼합 모형 제안
+- **EM 알고리즘(Expectation-Maximization)**을 통한 모수 추정 및 예측
+
+## 이번 연구: 단일 지점 예측 → 다지역 동시 예측(Multivariate Forecasting)
+
+:::: {.columns}
+::: {.column width="60%"}
+![**Figure:** Solar irradiance time series observed simultaneously across multiple regions in Korea. Geographically closer locations exhibit higher similarity in their patterns.](figs/fig2.png){width="100%"}
+:::
+::: {.column width="40%"}
+**문제 정의의 확장**
+
+- 단일 지점 시계열 예측 → **다변량 시공간 예측(multivariate spatio-temporal forecasting)**
+- Temporal data → **Spatio-Temporal data**로의 문제 재정의
+
+**공간적 의존성(Spatial Dependency)**
+
+- 지리적으로 인접한 지역은 **유사한 기상 패턴**을 공유
+
+**STGNN(Spatio-Temporal Graph Neural Network) 도입 근거**
+
+- 지역 간 공간적 의존성을 **그래프 구조로 명시적 모델링**
+- 관측소(station) = 노드(node), 관측값 = 노드 신호(node signal)
+
+**그래프 기반 자료 표현**
+
+$$\mathcal{G} = (\mathcal{V}, \mathbf{A}, \{y_{v,t}\})$$
+:::
+::::
+
+## STGNN의 핵심 문제: 인접행렬(Adjacency Matrix) 정의
+
+> **핵심 이슈**: STGNN 적용 시 노드 간 연결성 정의가 선행되어야 함
+
+**인접행렬 $\mathbf{A}$의 부재**
+
+- 대부분의 STGNN 연구는 인접행렬 $\mathbf{A}$가 **사전에 주어졌다고 가정**
+- 그러나 실제 응용에서는 이러한 정보가 **명시적으로 제공되지 않는 경우가 다수**
+
+**응용 분야별 인접행렬 정의의 차이**
+
+<div style="width: fit-content; margin: auto;">
+
+| 분야 | 인접행렬 $\mathbf{A}$ 정의 |
+|:---:|:---|
+| 교통 네트워크 | 도로 연결 구조가 **물리적으로 명확** |
+| 기상 관측망 | 지역 간 연결성의 정의가 **자명하지 않음** |
+
+</div>
+
+**따라서 $\mathbf{A}$를 데이터로부터 추정해야 하는 문제 발생**
+
+## $\mathbf{A}$ 추정 방법 1: 지리적 거리 기반(Distance-Based Approach)
+
+:::: {.columns}
+::: {.column width="60%"}
+![**Figure:** Comparison of solar irradiance patterns between Daejeon–Seosan (96.2 km) and Cheorwon–Incheon (94.9 km). Although the geographical distances are nearly identical, the irradiance variations differ substantially.](figs/fig3.png){width="100%"}
+:::
+::: {.column width="40%"}
+**거리 기반 접근법**
+
+- 노드 간 연결 강도를 **지리적 거리의 함수**로 정의 (예: Gaussian kernel)
+- 물리적 근접성 ≈ 패턴 유사성이라는 **가정**
+
+**한계: 거리 ≠ 기후적 유사성(Climatological Similarity)**
+
+- 물리적 거리가 유사해도 **지형적 특성(해안/내륙, 고도 등)**에 따라 기후 패턴이 상이
+
+<div style="width: fit-content; margin: auto;">
+
+| 지역 쌍 | 거리 | 패턴 유사성 |
+|:---:|:---:|:---|
+| 대전-서산 | 96.2 km | **낮음** (서산: 해양성 기후) |
+| 철원-인천 | 94.9 km | **높음** (유사 기후대) |
+
+</div>
+
+→ **물리적 거리만으로는 기후적 유사성을 충분히 설명할 수 없음**
+:::
+::::
+
+## $\mathbf{A}$ 추정 방법 2: 상관계수 기반(Correlation-Based Approach)
+
+:::: {.columns}
+::: {.column width="50%"}
+![**Figure:** Correlation matrix of solar irradiance among all stations in Korea. Overall correlations are very high, with the lowest value observed between Seoul and Heuksando (0.6422).](figs/fig4.png){width="90%"}
+:::
+::: {.column width="50%"}
+**데이터 기반 접근법**
+
+- 시계열 간 **표본상관계수(sample correlation coefficient)**로 유사성 정량화
+
+**분석 결과**
+
+- 전국 44개 관측소 간 **대부분 높은 상관계수** 관측
+- 최소값: 서울-흑산도 간 **$r = 0.6422$**
+- 직관적 기대치보다 **현저히 높은 수준**
+- 실제 기후적 유사성과 **괴리** 존재
+
+**원인 분석**
+
+> **야간 영값 구간(nighttime zero-inflation)**이 공유되어 표본상관계수가 **인위적으로 상승**
+:::
+::::
+
+## 가성 상관(Spurious Correlation)의 시각화
+
+:::: {.columns}
+::: {.column width="50%"}
+![**Figure:** Comparison of solar irradiance time series: Seoul–Heuksando (top, correlation = 0.6422) and Gochang–Yeonggwang (bottom, correlation = 0.9681).](figs/fig5.png){width="100%"}
+:::
+::: {.column width="50%"}
+
+<div style="width: fit-content; margin: auto;">
+
+| 지역 쌍 | 상관계수 | 실제 패턴 |
+|:---:|:---:|:---|
+| 고창-영광군 | 0.9681 | 높은 유사성 (인접 지역) |
+| 서울-흑산도 | 0.6422 | **사실상 역상관(inverse) 패턴** |
+
+</div>
+
+**서울-흑산도 사례 분석**
+
+- 시각적으로는 **음의 상관(negative correlation)**에 가까운 반대 양상
+- 그러나 표본상관계수는 **$r = 0.64$로 양의 값**
+
+**모델링 관점에서의 문제**
+
+이 상관계수를 그대로 인접행렬에 반영할 경우, 서울 예측 시 흑산도 정보가 **가중치 0.6으로 포함**
+
+→ 야간 예측에는 유효하나, **주간 예측에서는 오히려 노이즈로 작용**
+:::
+::::
+
+## 제안 방법: 승법적 분해(Multiplicative Decomposition)
+
+**신호 분해의 두 가지 관점: 가법 모형 vs 승법 모형**
+
+삼각함수의 합-곱 공식(product-to-sum identity):
+
+$$\cos(58\pi t) + \cos(62\pi t) = 2\cos(60\pi t) \cdot \cos(2\pi t)$$
+
+- **좌변**: 두 주파수 성분의 **가법적 결합(additive combination)**
+- **우변**: 반송파(carrier)와 포락선(envelope)의 **승법적 결합(multiplicative combination)**
+
+**태양복사량 시계열의 승법적 분해**
+
+$$y_{v,t} = y_{v,t}^U \times y_{v,t}^P$$
+
+<div style="width: fit-content; margin: auto;">
+
+| 성분 | 물리적 의미 | 특성 |
+|:---:|:---|:---|
+| $y_{v,t}^U$ | **진폭 변조(Amplitude Modulation)** — 기상 조건 반영 | 상한 포락선(upper envelope), 완만한 변화 |
+| $y_{v,t}^P$ | **주기 성분(Periodic Component)** — 태양 고도 패턴 | 정규화된 일일 패턴 ($\in [0,1]$) |
+
+</div>
+
+## EBT(Elastic-Band Transform) 분해 알고리즘 {.scrollable}
+
+::: {style="overflow-y: auto; max-height: 800px;"}
+![**Figure:** Illustration of the EBT decomposition process for solar irradiance time series. Left: Construction of elastic bands with τ=24 and extraction of the upper envelope (red curve). Right: Decomposed components showing the amplitude modulation component (top) and the normalized periodic component (bottom).](figs/sec32_fig1.png){width="100%"}
+:::
+
+**EBT 기반 승법적 분해** [@choi2023elastic; @choi2024decomposition]
+
+- **좌측 패널**: $\tau=24$ 시간 단위의 Elastic Band 구성 → Upper Envelope $u_{v,t}^{\mathbf{y}_v,\tau}$ 추출
+- **우측 상단**: 진폭 변조 성분 $y_{v,t}^U = u_{v,t}^{\mathbf{y}_v,\tau}$ — 기상 조건에 의한 최대 가능 복사량
+- **우측 하단**: 주기 성분 $y_{v,t}^P = y_{v,t} / (y_{v,t}^U + \epsilon)$ — 태양 고도에 의한 정규화된 일일 패턴
+
+## 분해 후 공간적 상관 구조의 변화 {.scrollable}
+
+::: {style="overflow-y: auto; max-height: 800px;"}
+![**Figure:** Spatial correlation structure of EBT-decomposed components. Top: Sample time series of $y_{v,t}$, $y_{v,t}^P$, and $y_{v,t}^U$ from seven regions. Bottom: Correlation matrices showing uniform high correlations for the periodic component and structured regional clustering for the amplitude modulation component.](figs/corr_grid_plot_v3.png){width="100%"}
+:::
+
+**분해 결과의 검증**
+
+- **주기 성분** $y^P$: 상관행렬이 **Dense** 구조 — 전국적으로 거의 동일한 패턴 ($r_{v,s}^P \approx 1$)
+- **진폭 변조 성분** $y^U$: 상관행렬이 **Sparse** 구조 — 기후적으로 유사한 지역 간 **블록 구조(block structure)** 출현
+
+## 제안 프레임워크 개요 {.scrollable}
+
+::: {style="overflow-y: auto; max-height: 800px;"}
+![**Figure:** Process of decomposing the raw time series into a periodic component and an amplitude modulation component using the EBT, constructing separate graphs, applying STGNN-based models to each component independently, and recombining the two prediction results to obtain the final forecast.](pipeline.png){width="100%"}
+:::
+
+**핵심 전략**: 분해된 각 성분에 독립적인 STGNN 적용 후 재결합
+
+$$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
+
+## 제안 프레임워크의 장점
+
+**1. 성분별 최적화된 그래프 구조(Component-Specific Graph)**
+
+<div style="width: fit-content; margin: auto;">
+
+| 성분 | 그래프 구조 | 근거 |
+|:---:|:---:|:---|
+| 주기 $y^P$ | **Dense** | 일일 주기 패턴은 전국적으로 유사 ($r_{v,s}^P \approx 1$) → 전체 지역 정보 활용 |
+| 진폭 $y^U$ | **Sparse** | 기후적으로 유사한 지역만 유의미한 상관 → 선택적 정보 활용 |
+
+</div>
+
+**2. 모델링 복잡도 감소**
+
+- **주기 성분**: 규칙적 패턴 → 학습이 용이(easy to learn)
+- **진폭 성분**: 주기성 제거로 시간적 구조가 **단순화(simplified temporal structure)**
+
+**3. 성분별 하이퍼파라미터 최적화**
+
+<div style="width: fit-content; margin: auto;">
+
+| 성분 | 최적 시차(Lag) | 필터 수 |
+|:---:|:---:|:---|
+| 주기 $y^P$ | **lag = 24** (전체 일주기 포착) | 다수 필요 |
+| 진폭 $y^U$ | **lag = 4** (단기 의존성 충분) | 소수로 충분 |
+
+</div>
+
+## 실험에 사용된 STGNN 아키텍처
+
+<div style="width: fit-content; margin: auto;">
+
+| Model | Temporal | GNN Layer | 주요 특징 |
+|:---:|:---:|:---:|:---|
+| **GConvGRU** | GRU | Chebyshev | GRU gate 내 스펙트럴 그래프 합성곱(spectral conv.) |
+| **GConvLSTM** | LSTM | Chebyshev | Peephole connection 포함 |
+| **T-GCN** | GRU | GCN | 경량화된 1차 근사(first-order approx.) |
+| **DCRNN** | GRU | DiffConv | 양방향 확산 합성곱(bidirectional diffusion conv.) |
+
+</div>
+
+**참고 문헌**: @seo2018structured, @zhao2019t, @li2017diffusion, @rozemberczki2021pytorch
+
+## 실험 설정(Experimental Setup)
+
+- **데이터**: 대한민국 44개 관측 지점, $T = 2{,}568$ 시점 (약 107일간 시간별 관측)
+- **데이터 분할**: 학습(Training) 80% / 테스트(Test) 20%
+- **테스트 기간 특이사항**: 2022년 9월 초 **태풍 힌남노(Typhoon Hinnamnor)** 포함 [@digital_typhoon]
+
+**세 가지 예측 전략 비교**
+
+<div style="width: fit-content; margin: auto;">
+
+| 전략 | 설명 |
+|:---:|:---|
+| **Classic** | 원 시계열 $y_{v,t}$를 단일 STGNN으로 직접 예측 (baseline) |
+| **Proposed $(L,L)$** | EBT 분해 후 두 성분 모두 동일 시차 $L$ 적용 |
+| **Proposed $(4,L)$** | $y_{v,t}^U$는 lag=4, $y_{v,t}^P$는 lag=$L$ 적용 (비대칭 설정) |
+
+</div>
+
+## 실험 결과: GConvGRU (MSE) {.scrollable}
+
+<div style="width: fit-content; margin: auto;">
+
+| Lag | F | Classic | Proposed (L,L) | Proposed (4,L) |
+|:---:|:---:|:---:|:---:|:---:|
+| 8 | 8 | 0.0535<sub>±0.0011</sub> | 0.0430<sub>±0.0021</sub> | [**0.0419**<sub>±0.0007</sub>]{style="color: red;"} |
+| 8 | 16 | 0.0537<sub>±0.0012</sub> | 0.0413<sub>±0.0008</sub> | [**0.0408**<sub>±0.0010</sub>]{style="color: red;"} |
+| 8 | 24 | 0.0535<sub>±0.0011</sub> | 0.0416<sub>±0.0010</sub> | [**0.0404**<sub>±0.0007</sub>]{style="color: red;"} |
+| 8 | 32 | 0.0541<sub>±0.0005</sub> | 0.0408<sub>±0.0012</sub> | [**0.0400**<sub>±0.0003</sub>]{style="color: red;"} |
+| 12 | 8 | 0.0534<sub>±0.0012</sub> | 0.0438<sub>±0.0013</sub> | [**0.0426**<sub>±0.0006</sub>]{style="color: red;"} |
+| 12 | 16 | 0.0544<sub>±0.0008</sub> | 0.0426<sub>±0.0010</sub> | [**0.0416**<sub>±0.0004</sub>]{style="color: red;"} |
+| 12 | 24 | 0.0548<sub>±0.0008</sub> | 0.0423<sub>±0.0017</sub> | [**0.0415**<sub>±0.0004</sub>]{style="color: red;"} |
+| 12 | 32 | 0.0549<sub>±0.0007</sub> | 0.0427<sub>±0.0017</sub> | [**0.0411**<sub>±0.0004</sub>]{style="color: red;"} |
+| 24 | 8 | 0.0657<sub>±0.0023</sub> | 0.0512<sub>±0.0016</sub> | [**0.0461**<sub>±0.0013</sub>]{style="color: red;"} |
+| 24 | 16 | 0.0662<sub>±0.0018</sub> | 0.0499<sub>±0.0029</sub> | [**0.0471**<sub>±0.0007</sub>]{style="color: red;"} |
+| 24 | 24 | 0.0675<sub>±0.0024</sub> | 0.0507<sub>±0.0026</sub> | [**0.0470**<sub>±0.0008</sub>]{style="color: red;"} |
+| 24 | 32 | 0.0677<sub>±0.0010</sub> | 0.0503<sub>±0.0013</sub> | [**0.0472**<sub>±0.0007</sub>]{style="color: red;"} |
+
+</div>
+
+→ **모든 설정에서 제안 방법이 baseline 대비 일관된 성능 향상**을 보임 (MSE 기준 약 20-30% 감소)
+
+## 태풍 힌남노 기간: 극한 기상 조건에서의 강건성 {.scrollable}
+
+::: {style="overflow-y: auto; max-height: 800px;"}
+![**Figure:** Top 9 regions by typhoon period improvement rate. Left: Geographical distribution. Right: Time series comparison during Typhoon Hinnamnor (Aug 30 – Sep 8, 2022). Red shading indicates core impact period (Sep 4–6).](figs/251121_top9_typhoon_map_timeseries_geojson.png){width="100%"}
+:::
+
+**극한 기상 조건(extreme weather condition)에서 제안 방법의 성능 향상이 더욱 두드러짐**
+
+## 태풍 기간 지역별 성능 개선 (MSE Reduction)
+
+<div style="width: fit-content; margin: auto;">
+
+| # | 지역 | Classic | Proposed | MSE 감소율 |
+|:---:|:---|:---:|:---:|:---:|
+| 1 | 경주시 | 0.0791 | 0.0436 | [**44.9%**]{style="color: red;"} |
+| 2 | 함양군 | 0.0596 | 0.0343 | [**42.5%**]{style="color: red;"} |
+| 3 | 창원 | 0.0644 | 0.0375 | [**41.8%**]{style="color: red;"} |
+| 4 | 의령군 | 0.0561 | 0.0353 | **37.1%** |
+| 5 | 부산 | 0.0753 | 0.0493 | **34.5%** |
+| 6 | 고산 | 0.0388 | 0.0257 | **33.8%** |
+| 7 | 양산시 | 0.0746 | 0.0497 | **33.4%** |
+| 8 | 김해시 | 0.0725 | 0.0485 | **33.1%** |
+| 9 | 청송군 | 0.0539 | 0.0363 | **32.6%** |
+
+</div>
+
+→ 태풍 경로(한반도 동남부)에 위치한 지역에서 **32-45% MSE 감소** 달성
+
+## 주요 기여(Main Contributions)
+
+**1. 승법적 분해 프레임워크(Multiplicative Decomposition Framework) 제안**
+
+- 태양복사량 시계열의 **$y = y^U \times y^P$ 분해 모형** 도입
+- 주기성으로 인한 **가성 상관(spurious correlation) 문제를 근본적으로 해결**
+
+**2. 성분별 비대칭적 모델링(Asymmetric Component Modeling)**
+
+- 각 성분의 시공간적 특성에 맞는 **독립적 그래프 구조 및 하이퍼파라미터 최적화**
+- 진폭: 짧은 시차(lag=4), sparse graph / 주기: 긴 시차(lag=24), dense graph
+
+**3. 극한 기상 조건에서의 강건성(Robustness under Extreme Weather)**
+
+- 태풍 힌남노 기간 동안 **32-45% MSE 감소** 달성
+
+## 리뷰어 질의 1: 대안적 분해 방법과의 비교
+
+> *"Comparative analyses with alternative decomposition techniques such as STL, EMD, or wavelet methods would strengthen the argument that EBT provides distinct advantages."*
+
+**비교 대상**: STL [@cleveland1990stl], EMD [@huang1998empirical], Wavelet [@mallat2002theory] vs EBT
+
+<div style="width: fit-content; margin: auto;">
+
+| 방법 | 분해 형태 | 분해 결과 |
+|:---:|:---:|:---|
+| STL | 가법적(additive) | Residual에 일주기 성분 잔존 |
+| EMD | 가법적(additive) | 주기 성분이 특정 IMF에 명확히 분리되지 않음 |
+| Wavelet | 가법적(additive) | 주기 에너지가 다수 레벨에 분산 |
+| **EBT** | **승법적(multiplicative)** | **명확한 2성분 분해** ($y^U$, $y^P$) |
+
+</div>
+
+→ **가법적 분해법(STL, EMD, Wavelet)은 태양복사량의 구조적 특성에 부적합**
+
+## 분해 방법 비교: 원 스케일(Raw Scale) {.scrollable}
+
+::: {style="overflow-y: auto; max-height: 800px;"}
+![**Figure:** Decomposition comparisons on the raw-scale irradiance series for Seoul (2022-09-01 to 2022-09-15). Top: EBT multiplicative decomposition. Middle rows: STL and EMD additive decompositions. Bottom: Wavelet (db4, level 4) additive decomposition.](figs/A1_fig1.png){width="100%"}
+:::
+
+## 분해 방법 비교: 로그 스케일(Log Scale) {.scrollable}
+
+::: {style="overflow-y: auto; max-height: 800px;"}
+![**Figure:** Decomposition comparisons on the log-transformed irradiance series for Seoul (2022-09-01 to 2022-09-15). Top: EBT multiplicative decomposition. Middle rows: STL and EMD multiplicative decompositions. Bottom: Wavelet (db4, level 4) multiplicative decomposition.](figs/A1_fig2.png){width="100%"}
+:::
+
+## 리뷰어 질의 2: Non-graph 딥러닝 모델과의 비교
+
+> *"Comparisons with non-graph deep learning baselines such as LSTM, CNN-LSTM, or temporal convolutional networks would help clarify the specific advantages of the proposed approach."*
+
+**비교 모델**: TCN, LSTM, CNN-LSTM [@bai2018tcn; @hochreiter1997lstm; @agga2021short] (2000 epochs, 10회 반복 실험)
+
+<div style="width: fit-content; margin: auto;">
+
+| 모델 | MSE | 설정 |
+|:---:|:---:|:---:|
+| TCN | 0.0601<sub>±.0012</sub> | L=24 |
+| LSTM | 0.0841<sub>±.0023</sub> | L=8 |
+| CNN-LSTM | 0.0975<sub>±.0037</sub> | L=8 |
+| **Proposed (EBT+STGNN)** | [**0.0400**<sub>±.0003</sub>]{style="color: red;"} | L=8 |
+
+</div>
+
+→ Non-spatial 최고 모델(TCN) 대비 **33% MSE 감소** — **공간적 의존성 모델링의 효과 입증**
+
+## 감사합니다 (Thank You)
+
+**논문 정보**
+
+**"Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction"**
+
+*CMES-Computer Modeling in Engineering & Sciences*, 2025
+
+**Contact**: guebin.choi@jbnu.ac.kr
+
+## References

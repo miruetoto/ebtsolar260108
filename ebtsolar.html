@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="ebtsolar_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ebtsolar_files/libs/quarto-html/tabby.min.js"></script>
+<script src="ebtsolar_files/libs/quarto-html/popper.min.js"></script>
+<script src="ebtsolar_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="ebtsolar_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ebtsolar_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="ebtsolar_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.42">
+
+  <meta name="author" content="최규빈">
+  <meta name="dcterms.date" content="2026-01-07">
+  <title>Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="ebtsolar_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="ebtsolar_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="ebtsolar_files/libs/revealjs/dist/theme/quarto-9e77ef18d9acafda8dd8ffb736f467af.css">
+  <link href="ebtsolar_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="ebtsolar_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="ebtsolar_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="ebtsolar_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction</h1>
+  <p class="subtitle">다중척도워크샵2026</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+최규빈 
+</div>
+        <p class="quarto-title-affiliation">
+            전북대학교 통계학과
+          </p>
+    </div>
+</div>
+
+  <p class="date">2026-01-07</p>
+</section>
+<section id="태양복사량-시계열의-특성" class="slide level2 scrollable">
+<h2>태양복사량 시계열의 특성</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/fig1.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Example of solar irradiance time series observed in Seoul. Strong daily periodicity coexists with irregular fluctuations caused by weather conditions.</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:40%;">
+<p><strong>강한 주기성을 가지나, 분석이 까다로운 구조</strong></p>
+<ol type="1">
+<li><p><strong>Sinusoid가 아님</strong>: 반파(half-wave) 형태 → Fourier 기반 분해법 적용에 한계</p></li>
+<li><p><strong>정확한 주기가 아님</strong>: 계절에 따라 일출·일몰 시각이 변동 → 엄밀한 24시간 주기가 아님</p></li>
+</ol>
+<p><strong>야간 영값(zero-inflation) 문제</strong></p>
+<ul>
+<li>밤 시간대 복사량이 <strong>구조적으로 0</strong> → 일반적인 시계열 분석 기법 적용이 제한됨</li>
+<li>AR 모형, LSTM 등 연속적 시계열을 가정하는 구조 적용이 어려움</li>
+</ul>
+</div></div>
+</section>
+<section id="문제-자료의-고유한-특성을-반영해야-성능-개선이-가능" class="slide level2 scrollable">
+<h2>문제: 자료의 고유한 특성을 반영해야 성능 개선이 가능</h2>
+<blockquote>
+<p><strong>핵심</strong>: 태양복사량의 구조적 특성(일일 주기성, 야간 영값)을 고려하지 않으면 예측 성능 향상에 근본적 한계가 존재</p>
+</blockquote>
+<p><strong>전통적 시계열 모형의 한계</strong></p>
+<ul>
+<li><strong>통계적 모형</strong>: ARMA, ARIMA 등은 야간 영값 구간으로 인해 정상성(stationarity) 가정 위배</li>
+<li><strong>딥러닝 모형</strong>: TCN, LSTM, CNN-LSTM 등도 연속적 시계열 구조를 가정 → 영값 구간에서 학습 왜곡 발생</li>
+</ul>
+<p><strong>야간 영값 구간을 제외하고 예측한다면?</strong></p>
+<ol type="1">
+<li><strong>계절성 문제</strong>: 일출·일몰 시각이 계절마다 상이 → “19시~06시” 일괄 제외 <strong>불가능</strong></li>
+<li><strong>기상 조건 혼동</strong>: 복사량 ≈ 0인 구간 제외 시 → <strong>흐린 날의 저복사량도 함께 제외</strong>될 위험</li>
+</ol>
+<p><strong>일일 주기 성분(daily effect)을 분해한다면?</strong></p>
+<ul>
+<li>STL, EMD, Wavelet 등 기존 분해법으로는 일주기 성분이 <strong>명확히 분리되지 않음</strong></li>
+</ul>
+</section>
+<section id="해결책-계층적-모형hierarchical-model으로의-발상-전환" class="slide level2">
+<h2>해결책: 계층적 모형(Hierarchical Model)으로의 발상 전환</h2>
+<blockquote>
+<p><strong>핵심 관점</strong>: 단순히 “이전 시점 → 다음 시점”의 직접 예측이 아니라, <strong>“일출 여부 판단 + 조건부 복사량 예측”</strong>의 이중 구조</p>
+</blockquote>
+<p><strong>모델링 전략</strong></p>
+<ul>
+<li>다음 시점의 <strong>일출 여부(sunrise indicator)</strong>를 먼저 판단</li>
+<li>일출 조건 하에서 <strong>태양복사량의 조건부 분포(conditional distribution)</strong>를 모델링</li>
+</ul>
+<p><strong>선행 연구</strong> <span class="citation" data-cites="lee2021short">(<a href="#/references" role="doc-biblioref" onclick="">Lee, Jeong, and Choi 2021</a>)</span></p>
+<ul>
+<li>일출 여부를 나타내는 <strong>잠재변수(latent variable)</strong>를 도입한 혼합 모형 제안</li>
+<li><strong>EM 알고리즘(Expectation-Maximization)</strong>을 통한 모수 추정 및 예측</li>
+</ul>
+</section>
+<section id="이번-연구-단일-지점-예측-다지역-동시-예측multivariate-forecasting" class="slide level2">
+<h2>이번 연구: 단일 지점 예측 → 다지역 동시 예측(Multivariate Forecasting)</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/fig2.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Solar irradiance time series observed simultaneously across multiple regions in Korea. Geographically closer locations exhibit higher similarity in their patterns.</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:40%;">
+<p><strong>문제 정의의 확장</strong></p>
+<ul>
+<li>단일 지점 시계열 예측 → <strong>다변량 시공간 예측(multivariate spatio-temporal forecasting)</strong></li>
+<li>Temporal data → <strong>Spatio-Temporal data</strong>로의 문제 재정의</li>
+</ul>
+<p><strong>공간적 의존성(Spatial Dependency)</strong></p>
+<ul>
+<li>지리적으로 인접한 지역은 <strong>유사한 기상 패턴</strong>을 공유</li>
+</ul>
+<p><strong>STGNN(Spatio-Temporal Graph Neural Network) 도입 근거</strong></p>
+<ul>
+<li>지역 간 공간적 의존성을 <strong>그래프 구조로 명시적 모델링</strong></li>
+<li>관측소(station) = 노드(node), 관측값 = 노드 신호(node signal)</li>
+</ul>
+<p><strong>그래프 기반 자료 표현</strong></p>
+<p><span class="math display">\[\mathcal{G} = (\mathcal{V}, \mathbf{A}, \{y_{v,t}\})\]</span></p>
+</div></div>
+</section>
+<section id="stgnn의-핵심-문제-인접행렬adjacency-matrix-정의" class="slide level2">
+<h2>STGNN의 핵심 문제: 인접행렬(Adjacency Matrix) 정의</h2>
+<blockquote>
+<p><strong>핵심 이슈</strong>: STGNN 적용 시 노드 간 연결성 정의가 선행되어야 함</p>
+</blockquote>
+<p><strong>인접행렬 <span class="math inline">\(\mathbf{A}\)</span>의 부재</strong></p>
+<ul>
+<li>대부분의 STGNN 연구는 인접행렬 <span class="math inline">\(\mathbf{A}\)</span>가 <strong>사전에 주어졌다고 가정</strong></li>
+<li>그러나 실제 응용에서는 이러한 정보가 <strong>명시적으로 제공되지 않는 경우가 다수</strong></li>
+</ul>
+<p><strong>응용 분야별 인접행렬 정의의 차이</strong></p>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">분야</th>
+<th style="text-align: left;">인접행렬 <span class="math inline">\(\mathbf{A}\)</span> 정의</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">교통 네트워크</td>
+<td style="text-align: left;">도로 연결 구조가 <strong>물리적으로 명확</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">기상 관측망</td>
+<td style="text-align: left;">지역 간 연결성의 정의가 <strong>자명하지 않음</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>따라서 <span class="math inline">\(\mathbf{A}\)</span>를 데이터로부터 추정해야 하는 문제 발생</strong></p>
+</section>
+<section id="mathbfa-추정-방법-1-지리적-거리-기반distance-based-approach" class="slide level2">
+<h2><span class="math inline">\(\mathbf{A}\)</span> 추정 방법 1: 지리적 거리 기반(Distance-Based Approach)</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/fig3.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Comparison of solar irradiance patterns between Daejeon–Seosan (96.2 km) and Cheorwon–Incheon (94.9 km). Although the geographical distances are nearly identical, the irradiance variations differ substantially.</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:40%;">
+<p><strong>거리 기반 접근법</strong></p>
+<ul>
+<li>노드 간 연결 강도를 <strong>지리적 거리의 함수</strong>로 정의 (예: Gaussian kernel)</li>
+<li>물리적 근접성 ≈ 패턴 유사성이라는 <strong>가정</strong></li>
+</ul>
+<p><strong>한계: 거리 ≠ 기후적 유사성(Climatological Similarity)</strong></p>
+<ul>
+<li>물리적 거리가 유사해도 <strong>지형적 특성(해안/내륙, 고도 등)</strong>에 따라 기후 패턴이 상이</li>
+</ul>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">지역 쌍</th>
+<th style="text-align: center;">거리</th>
+<th style="text-align: left;">패턴 유사성</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">대전-서산</td>
+<td style="text-align: center;">96.2 km</td>
+<td style="text-align: left;"><strong>낮음</strong> (서산: 해양성 기후)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">철원-인천</td>
+<td style="text-align: center;">94.9 km</td>
+<td style="text-align: left;"><strong>높음</strong> (유사 기후대)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>→ <strong>물리적 거리만으로는 기후적 유사성을 충분히 설명할 수 없음</strong></p>
+</div></div>
+</section>
+<section id="mathbfa-추정-방법-2-상관계수-기반correlation-based-approach" class="slide level2">
+<h2><span class="math inline">\(\mathbf{A}\)</span> 추정 방법 2: 상관계수 기반(Correlation-Based Approach)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/fig4.png" style="width:90.0%"></p>
+<figcaption><strong>Figure:</strong> Correlation matrix of solar irradiance among all stations in Korea. Overall correlations are very high, with the lowest value observed between Seoul and Heuksando (0.6422).</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:50%;">
+<p><strong>데이터 기반 접근법</strong></p>
+<ul>
+<li>시계열 간 <strong>표본상관계수(sample correlation coefficient)</strong>로 유사성 정량화</li>
+</ul>
+<p><strong>분석 결과</strong></p>
+<ul>
+<li>전국 44개 관측소 간 <strong>대부분 높은 상관계수</strong> 관측</li>
+<li>최소값: 서울-흑산도 간 <strong><span class="math inline">\(r = 0.6422\)</span></strong></li>
+<li>직관적 기대치보다 <strong>현저히 높은 수준</strong></li>
+<li>실제 기후적 유사성과 <strong>괴리</strong> 존재</li>
+</ul>
+<p><strong>원인 분석</strong></p>
+<blockquote>
+<p><strong>야간 영값 구간(nighttime zero-inflation)</strong>이 공유되어 표본상관계수가 <strong>인위적으로 상승</strong></p>
+</blockquote>
+</div></div>
+</section>
+<section id="가성-상관spurious-correlation의-시각화" class="slide level2">
+<h2>가성 상관(Spurious Correlation)의 시각화</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/fig5.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Comparison of solar irradiance time series: Seoul–Heuksando (top, correlation = 0.6422) and Gochang–Yeonggwang (bottom, correlation = 0.9681).</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:50%;">
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">지역 쌍</th>
+<th style="text-align: center;">상관계수</th>
+<th style="text-align: left;">실제 패턴</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">고창-영광군</td>
+<td style="text-align: center;">0.9681</td>
+<td style="text-align: left;">높은 유사성 (인접 지역)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">서울-흑산도</td>
+<td style="text-align: center;">0.6422</td>
+<td style="text-align: left;"><strong>사실상 역상관(inverse) 패턴</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>서울-흑산도 사례 분석</strong></p>
+<ul>
+<li>시각적으로는 <strong>음의 상관(negative correlation)</strong>에 가까운 반대 양상</li>
+<li>그러나 표본상관계수는 <strong><span class="math inline">\(r = 0.64\)</span>로 양의 값</strong></li>
+</ul>
+<p><strong>모델링 관점에서의 문제</strong></p>
+<p>이 상관계수를 그대로 인접행렬에 반영할 경우, 서울 예측 시 흑산도 정보가 <strong>가중치 0.6으로 포함</strong></p>
+<p>→ 야간 예측에는 유효하나, <strong>주간 예측에서는 오히려 노이즈로 작용</strong></p>
+</div></div>
+</section>
+<section id="제안-방법-승법적-분해multiplicative-decomposition" class="slide level2">
+<h2>제안 방법: 승법적 분해(Multiplicative Decomposition)</h2>
+<p><strong>신호 분해의 두 가지 관점: 가법 모형 vs 승법 모형</strong></p>
+<p>삼각함수의 합-곱 공식(product-to-sum identity):</p>
+<p><span class="math display">\[\cos(58\pi t) + \cos(62\pi t) = 2\cos(60\pi t) \cdot \cos(2\pi t)\]</span></p>
+<ul>
+<li><strong>좌변</strong>: 두 주파수 성분의 <strong>가법적 결합(additive combination)</strong></li>
+<li><strong>우변</strong>: 반송파(carrier)와 포락선(envelope)의 <strong>승법적 결합(multiplicative combination)</strong></li>
+</ul>
+<p><strong>태양복사량 시계열의 승법적 분해</strong></p>
+<p><span class="math display">\[y_{v,t} = y_{v,t}^U \times y_{v,t}^P\]</span></p>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 30%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">성분</th>
+<th style="text-align: left;">물리적 의미</th>
+<th style="text-align: left;">특성</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(y_{v,t}^U\)</span></td>
+<td style="text-align: left;"><strong>진폭 변조(Amplitude Modulation)</strong> — 기상 조건 반영</td>
+<td style="text-align: left;">상한 포락선(upper envelope), 완만한 변화</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(y_{v,t}^P\)</span></td>
+<td style="text-align: left;"><strong>주기 성분(Periodic Component)</strong> — 태양 고도 패턴</td>
+<td style="text-align: left;">정규화된 일일 패턴 (<span class="math inline">\(\in [0,1]\)</span>)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="ebtelastic-band-transform-분해-알고리즘" class="slide level2 scrollable">
+<h2>EBT(Elastic-Band Transform) 분해 알고리즘</h2>
+<div style="overflow-y: auto; max-height: 800px;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/sec32_fig1.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Illustration of the EBT decomposition process for solar irradiance time series. Left: Construction of elastic bands with τ=24 and extraction of the upper envelope (red curve). Right: Decomposed components showing the amplitude modulation component (top) and the normalized periodic component (bottom).</figcaption>
+</figure>
+</div>
+</div>
+<p><strong>EBT 기반 승법적 분해</strong> <span class="citation" data-cites="choi2023elastic choi2024decomposition">(<a href="#/references" role="doc-biblioref" onclick="">Choi and Oh 2023</a>, <a href="#/references" role="doc-biblioref" onclick="">2024</a>)</span></p>
+<ul>
+<li><strong>좌측 패널</strong>: <span class="math inline">\(\tau=24\)</span> 시간 단위의 Elastic Band 구성 → Upper Envelope <span class="math inline">\(u_{v,t}^{\mathbf{y}_v,\tau}\)</span> 추출</li>
+<li><strong>우측 상단</strong>: 진폭 변조 성분 <span class="math inline">\(y_{v,t}^U = u_{v,t}^{\mathbf{y}_v,\tau}\)</span> — 기상 조건에 의한 최대 가능 복사량</li>
+<li><strong>우측 하단</strong>: 주기 성분 <span class="math inline">\(y_{v,t}^P = y_{v,t} / (y_{v,t}^U + \epsilon)\)</span> — 태양 고도에 의한 정규화된 일일 패턴</li>
+</ul>
+</section>
+<section id="분해-후-공간적-상관-구조의-변화" class="slide level2 scrollable">
+<h2>분해 후 공간적 상관 구조의 변화</h2>
+<div style="overflow-y: auto; max-height: 800px;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/corr_grid_plot_v3.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Spatial correlation structure of EBT-decomposed components. Top: Sample time series of <span class="math inline">\(y_{v,t}\)</span>, <span class="math inline">\(y_{v,t}^P\)</span>, and <span class="math inline">\(y_{v,t}^U\)</span> from seven regions. Bottom: Correlation matrices showing uniform high correlations for the periodic component and structured regional clustering for the amplitude modulation component.</figcaption>
+</figure>
+</div>
+</div>
+<p><strong>분해 결과의 검증</strong></p>
+<ul>
+<li><strong>주기 성분</strong> <span class="math inline">\(y^P\)</span>: 상관행렬이 <strong>Dense</strong> 구조 — 전국적으로 거의 동일한 패턴 (<span class="math inline">\(r_{v,s}^P \approx 1\)</span>)</li>
+<li><strong>진폭 변조 성분</strong> <span class="math inline">\(y^U\)</span>: 상관행렬이 <strong>Sparse</strong> 구조 — 기후적으로 유사한 지역 간 <strong>블록 구조(block structure)</strong> 출현</li>
+</ul>
+</section>
+<section id="제안-프레임워크-개요" class="slide level2 scrollable">
+<h2>제안 프레임워크 개요</h2>
+<div style="overflow-y: auto; max-height: 800px;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="pipeline.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Process of decomposing the raw time series into a periodic component and an amplitude modulation component using the EBT, constructing separate graphs, applying STGNN-based models to each component independently, and recombining the two prediction results to obtain the final forecast.</figcaption>
+</figure>
+</div>
+</div>
+<p><strong>핵심 전략</strong>: 분해된 각 성분에 독립적인 STGNN 적용 후 재결합</p>
+<p><span class="math display">\[\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P\]</span></p>
+</section>
+<section id="제안-프레임워크의-장점" class="slide level2">
+<h2>제안 프레임워크의 장점</h2>
+<p><strong>1. 성분별 최적화된 그래프 구조(Component-Specific Graph)</strong></p>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 35%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">성분</th>
+<th style="text-align: center;">그래프 구조</th>
+<th style="text-align: left;">근거</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">주기 <span class="math inline">\(y^P\)</span></td>
+<td style="text-align: center;"><strong>Dense</strong></td>
+<td style="text-align: left;">일일 주기 패턴은 전국적으로 유사 (<span class="math inline">\(r_{v,s}^P \approx 1\)</span>) → 전체 지역 정보 활용</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">진폭 <span class="math inline">\(y^U\)</span></td>
+<td style="text-align: center;"><strong>Sparse</strong></td>
+<td style="text-align: left;">기후적으로 유사한 지역만 유의미한 상관 → 선택적 정보 활용</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>2. 모델링 복잡도 감소</strong></p>
+<ul>
+<li><strong>주기 성분</strong>: 규칙적 패턴 → 학습이 용이(easy to learn)</li>
+<li><strong>진폭 성분</strong>: 주기성 제거로 시간적 구조가 <strong>단순화(simplified temporal structure)</strong></li>
+</ul>
+<p><strong>3. 성분별 하이퍼파라미터 최적화</strong></p>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">성분</th>
+<th style="text-align: center;">최적 시차(Lag)</th>
+<th style="text-align: left;">필터 수</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">주기 <span class="math inline">\(y^P\)</span></td>
+<td style="text-align: center;"><strong>lag = 24</strong> (전체 일주기 포착)</td>
+<td style="text-align: left;">다수 필요</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">진폭 <span class="math inline">\(y^U\)</span></td>
+<td style="text-align: center;"><strong>lag = 4</strong> (단기 의존성 충분)</td>
+<td style="text-align: left;">소수로 충분</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="실험에-사용된-stgnn-아키텍처" class="slide level2">
+<h2>실험에 사용된 STGNN 아키텍처</h2>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Temporal</th>
+<th style="text-align: center;">GNN Layer</th>
+<th style="text-align: left;">주요 특징</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>GConvGRU</strong></td>
+<td style="text-align: center;">GRU</td>
+<td style="text-align: center;">Chebyshev</td>
+<td style="text-align: left;">GRU gate 내 스펙트럴 그래프 합성곱(spectral conv.)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>GConvLSTM</strong></td>
+<td style="text-align: center;">LSTM</td>
+<td style="text-align: center;">Chebyshev</td>
+<td style="text-align: left;">Peephole connection 포함</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>T-GCN</strong></td>
+<td style="text-align: center;">GRU</td>
+<td style="text-align: center;">GCN</td>
+<td style="text-align: left;">경량화된 1차 근사(first-order approx.)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>DCRNN</strong></td>
+<td style="text-align: center;">GRU</td>
+<td style="text-align: center;">DiffConv</td>
+<td style="text-align: left;">양방향 확산 합성곱(bidirectional diffusion conv.)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>참고 문헌</strong>: <span class="citation" data-cites="seo2018structured">Seo et al. (<a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span>, <span class="citation" data-cites="zhao2019t">Zhao et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span>, <span class="citation" data-cites="li2017diffusion">Li et al. (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span>, <span class="citation" data-cites="rozemberczki2021pytorch">Rozemberczki et al. (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span></p>
+</section>
+<section id="실험-설정experimental-setup" class="slide level2">
+<h2>실험 설정(Experimental Setup)</h2>
+<ul>
+<li><strong>데이터</strong>: 대한민국 44개 관측 지점, <span class="math inline">\(T = 2{,}568\)</span> 시점 (약 107일간 시간별 관측)</li>
+<li><strong>데이터 분할</strong>: 학습(Training) 80% / 테스트(Test) 20%</li>
+<li><strong>테스트 기간 특이사항</strong>: 2022년 9월 초 <strong>태풍 힌남노(Typhoon Hinnamnor)</strong> 포함 <span class="citation" data-cites="digital_typhoon">(<a href="#/references" role="doc-biblioref" onclick="">National Institute of Informatics 2022</a>)</span></li>
+</ul>
+<p><strong>세 가지 예측 전략 비교</strong></p>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 55%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">전략</th>
+<th style="text-align: left;">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>Classic</strong></td>
+<td style="text-align: left;">원 시계열 <span class="math inline">\(y_{v,t}\)</span>를 단일 STGNN으로 직접 예측 (baseline)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>Proposed <span class="math inline">\((L,L)\)</span></strong></td>
+<td style="text-align: left;">EBT 분해 후 두 성분 모두 동일 시차 <span class="math inline">\(L\)</span> 적용</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>Proposed <span class="math inline">\((4,L)\)</span></strong></td>
+<td style="text-align: left;"><span class="math inline">\(y_{v,t}^U\)</span>는 lag=4, <span class="math inline">\(y_{v,t}^P\)</span>는 lag=<span class="math inline">\(L\)</span> 적용 (비대칭 설정)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="실험-결과-gconvgru-mse" class="slide level2 scrollable">
+<h2>실험 결과: GConvGRU (MSE)</h2>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Lag</th>
+<th style="text-align: center;">F</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed (L,L)</th>
+<th style="text-align: center;">Proposed (4,L)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0535<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.0430<sub>±0.0021</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0419</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0537<sub>±0.0012</sub></td>
+<td style="text-align: center;">0.0413<sub>±0.0008</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0408</strong><sub>±0.0010</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0535<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.0416<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0404</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0541<sub>±0.0005</sub></td>
+<td style="text-align: center;">0.0408<sub>±0.0012</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0400</strong><sub>±0.0003</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0534<sub>±0.0012</sub></td>
+<td style="text-align: center;">0.0438<sub>±0.0013</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0426</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0544<sub>±0.0008</sub></td>
+<td style="text-align: center;">0.0426<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0416</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0548<sub>±0.0008</sub></td>
+<td style="text-align: center;">0.0423<sub>±0.0017</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0415</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0549<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.0427<sub>±0.0017</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0411</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0657<sub>±0.0023</sub></td>
+<td style="text-align: center;">0.0512<sub>±0.0016</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0461</strong><sub>±0.0013</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0662<sub>±0.0018</sub></td>
+<td style="text-align: center;">0.0499<sub>±0.0029</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0471</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0675<sub>±0.0024</sub></td>
+<td style="text-align: center;">0.0507<sub>±0.0026</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0470</strong><sub>±0.0008</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0677<sub>±0.0010</sub></td>
+<td style="text-align: center;">0.0503<sub>±0.0013</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0472</strong><sub>±0.0007</sub></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>→ <strong>모든 설정에서 제안 방법이 baseline 대비 일관된 성능 향상</strong>을 보임 (MSE 기준 약 20-30% 감소)</p>
+</section>
+<section id="태풍-힌남노-기간-극한-기상-조건에서의-강건성" class="slide level2 scrollable">
+<h2>태풍 힌남노 기간: 극한 기상 조건에서의 강건성</h2>
+<div style="overflow-y: auto; max-height: 800px;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/251121_top9_typhoon_map_timeseries_geojson.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Top 9 regions by typhoon period improvement rate. Left: Geographical distribution. Right: Time series comparison during Typhoon Hinnamnor (Aug 30 – Sep 8, 2022). Red shading indicates core impact period (Sep 4–6).</figcaption>
+</figure>
+</div>
+</div>
+<p><strong>극한 기상 조건(extreme weather condition)에서 제안 방법의 성능 향상이 더욱 두드러짐</strong></p>
+</section>
+<section id="태풍-기간-지역별-성능-개선-mse-reduction" class="slide level2">
+<h2>태풍 기간 지역별 성능 개선 (MSE Reduction)</h2>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">지역</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed</th>
+<th style="text-align: center;">MSE 감소율</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">경주시</td>
+<td style="text-align: center;">0.0791</td>
+<td style="text-align: center;">0.0436</td>
+<td style="text-align: center;"><span style="color: red;"><strong>44.9%</strong></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">함양군</td>
+<td style="text-align: center;">0.0596</td>
+<td style="text-align: center;">0.0343</td>
+<td style="text-align: center;"><span style="color: red;"><strong>42.5%</strong></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">창원</td>
+<td style="text-align: center;">0.0644</td>
+<td style="text-align: center;">0.0375</td>
+<td style="text-align: center;"><span style="color: red;"><strong>41.8%</strong></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">의령군</td>
+<td style="text-align: center;">0.0561</td>
+<td style="text-align: center;">0.0353</td>
+<td style="text-align: center;"><strong>37.1%</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">부산</td>
+<td style="text-align: center;">0.0753</td>
+<td style="text-align: center;">0.0493</td>
+<td style="text-align: center;"><strong>34.5%</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">고산</td>
+<td style="text-align: center;">0.0388</td>
+<td style="text-align: center;">0.0257</td>
+<td style="text-align: center;"><strong>33.8%</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">양산시</td>
+<td style="text-align: center;">0.0746</td>
+<td style="text-align: center;">0.0497</td>
+<td style="text-align: center;"><strong>33.4%</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">김해시</td>
+<td style="text-align: center;">0.0725</td>
+<td style="text-align: center;">0.0485</td>
+<td style="text-align: center;"><strong>33.1%</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">9</td>
+<td style="text-align: left;">청송군</td>
+<td style="text-align: center;">0.0539</td>
+<td style="text-align: center;">0.0363</td>
+<td style="text-align: center;"><strong>32.6%</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>→ 태풍 경로(한반도 동남부)에 위치한 지역에서 <strong>32-45% MSE 감소</strong> 달성</p>
+</section>
+<section id="주요-기여main-contributions" class="slide level2">
+<h2>주요 기여(Main Contributions)</h2>
+<p><strong>1. 승법적 분해 프레임워크(Multiplicative Decomposition Framework) 제안</strong></p>
+<ul>
+<li>태양복사량 시계열의 <strong><span class="math inline">\(y = y^U \times y^P\)</span> 분해 모형</strong> 도입</li>
+<li>주기성으로 인한 <strong>가성 상관(spurious correlation) 문제를 근본적으로 해결</strong></li>
+</ul>
+<p><strong>2. 성분별 비대칭적 모델링(Asymmetric Component Modeling)</strong></p>
+<ul>
+<li>각 성분의 시공간적 특성에 맞는 <strong>독립적 그래프 구조 및 하이퍼파라미터 최적화</strong></li>
+<li>진폭: 짧은 시차(lag=4), sparse graph / 주기: 긴 시차(lag=24), dense graph</li>
+</ul>
+<p><strong>3. 극한 기상 조건에서의 강건성(Robustness under Extreme Weather)</strong></p>
+<ul>
+<li>태풍 힌남노 기간 동안 <strong>32-45% MSE 감소</strong> 달성</li>
+</ul>
+</section>
+<section id="리뷰어-질의-1-대안적-분해-방법과의-비교" class="slide level2">
+<h2>리뷰어 질의 1: 대안적 분해 방법과의 비교</h2>
+<blockquote>
+<p><em>“Comparative analyses with alternative decomposition techniques such as STL, EMD, or wavelet methods would strengthen the argument that EBT provides distinct advantages.”</em></p>
+</blockquote>
+<p><strong>비교 대상</strong>: STL <span class="citation" data-cites="cleveland1990stl">(<a href="#/references" role="doc-biblioref" onclick="">Cleveland et al. 1990</a>)</span>, EMD <span class="citation" data-cites="huang1998empirical">(<a href="#/references" role="doc-biblioref" onclick="">Huang et al. 1998</a>)</span>, Wavelet <span class="citation" data-cites="mallat2002theory">(<a href="#/references" role="doc-biblioref" onclick="">Mallat 2002</a>)</span> vs EBT</p>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 35%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">방법</th>
+<th style="text-align: center;">분해 형태</th>
+<th style="text-align: left;">분해 결과</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">STL</td>
+<td style="text-align: center;">가법적(additive)</td>
+<td style="text-align: left;">Residual에 일주기 성분 잔존</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">EMD</td>
+<td style="text-align: center;">가법적(additive)</td>
+<td style="text-align: left;">주기 성분이 특정 IMF에 명확히 분리되지 않음</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Wavelet</td>
+<td style="text-align: center;">가법적(additive)</td>
+<td style="text-align: left;">주기 에너지가 다수 레벨에 분산</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>EBT</strong></td>
+<td style="text-align: center;"><strong>승법적(multiplicative)</strong></td>
+<td style="text-align: left;"><strong>명확한 2성분 분해</strong> (<span class="math inline">\(y^U\)</span>, <span class="math inline">\(y^P\)</span>)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>→ <strong>가법적 분해법(STL, EMD, Wavelet)은 태양복사량의 구조적 특성에 부적합</strong></p>
+</section>
+<section id="분해-방법-비교-원-스케일raw-scale" class="slide level2 scrollable">
+<h2>분해 방법 비교: 원 스케일(Raw Scale)</h2>
+<div style="overflow-y: auto; max-height: 800px;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/A1_fig1.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Decomposition comparisons on the raw-scale irradiance series for Seoul (2022-09-01 to 2022-09-15). Top: EBT multiplicative decomposition. Middle rows: STL and EMD additive decompositions. Bottom: Wavelet (db4, level 4) additive decomposition.</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="분해-방법-비교-로그-스케일log-scale" class="slide level2 scrollable">
+<h2>분해 방법 비교: 로그 스케일(Log Scale)</h2>
+<div style="overflow-y: auto; max-height: 800px;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/A1_fig2.png" style="width:100.0%"></p>
+<figcaption><strong>Figure:</strong> Decomposition comparisons on the log-transformed irradiance series for Seoul (2022-09-01 to 2022-09-15). Top: EBT multiplicative decomposition. Middle rows: STL and EMD multiplicative decompositions. Bottom: Wavelet (db4, level 4) multiplicative decomposition.</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="리뷰어-질의-2-non-graph-딥러닝-모델과의-비교" class="slide level2">
+<h2>리뷰어 질의 2: Non-graph 딥러닝 모델과의 비교</h2>
+<blockquote>
+<p><em>“Comparisons with non-graph deep learning baselines such as LSTM, CNN-LSTM, or temporal convolutional networks would help clarify the specific advantages of the proposed approach.”</em></p>
+</blockquote>
+<p><strong>비교 모델</strong>: TCN, LSTM, CNN-LSTM <span class="citation" data-cites="bai2018tcn hochreiter1997lstm agga2021short">(<a href="#/references" role="doc-biblioref" onclick="">Bai, Kolter, and Koltun 2018</a>; <a href="#/references" role="doc-biblioref" onclick="">Hochreiter and Schmidhuber 1997</a>; <a href="#/references" role="doc-biblioref" onclick="">Agga et al. 2021</a>)</span> (2000 epochs, 10회 반복 실험)</p>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">모델</th>
+<th style="text-align: center;">MSE</th>
+<th style="text-align: center;">설정</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">TCN</td>
+<td style="text-align: center;">0.0601<sub>±.0012</sub></td>
+<td style="text-align: center;">L=24</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">LSTM</td>
+<td style="text-align: center;">0.0841<sub>±.0023</sub></td>
+<td style="text-align: center;">L=8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">CNN-LSTM</td>
+<td style="text-align: center;">0.0975<sub>±.0037</sub></td>
+<td style="text-align: center;">L=8</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>Proposed (EBT+STGNN)</strong></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0400</strong><sub>±.0003</sub></span></td>
+<td style="text-align: center;">L=8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>→ Non-spatial 최고 모델(TCN) 대비 <strong>33% MSE 감소</strong> — <strong>공간적 의존성 모델링의 효과 입증</strong></p>
+</section>
+<section id="감사합니다-thank-you" class="slide level2">
+<h2>감사합니다 (Thank You)</h2>
+<p><strong>논문 정보</strong></p>
+<p><strong>“Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction”</strong></p>
+<p><em>CMES-Computer Modeling in Engineering &amp; Sciences</em>, 2025</p>
+<p><strong>Contact</strong>: guebin.choi@jbnu.ac.kr</p>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-agga2021short" class="csl-entry" role="listitem">
+Agga, Adil, Ahmed Abbou, Moussa Labbadi, and Yassine El Houm. 2021. <span>“Short-Term Self Consumption PV Plant Power Production Forecasts Based on Hybrid CNN-LSTM, ConvLSTM Models.”</span> <em>Renewable Energy</em> 177: 101–12.
+</div>
+<div id="ref-bai2018tcn" class="csl-entry" role="listitem">
+Bai, Shaojie, J Zico Kolter, and Vladlen Koltun. 2018. <span>“An Empirical Evaluation of Generic Convolutional and Recurrent Networks for Sequence Modeling.”</span> <em>arXiv Preprint arXiv:1803.01271</em>.
+</div>
+<div id="ref-choi2023elastic" class="csl-entry" role="listitem">
+Choi, Guebin, and Hee-Seok Oh. 2023. <span>“Elastic-Band Transform for Visualization and Detection.”</span> <em>Pattern Recognition Letters</em> 166: 119–25.
+</div>
+<div id="ref-choi2024decomposition" class="csl-entry" role="listitem">
+———. 2024. <span>“Decomposition via Elastic-Band Transform.”</span> <em>Pattern Recognition Letters</em> 182: 76–82.
+</div>
+<div id="ref-cleveland1990stl" class="csl-entry" role="listitem">
+Cleveland, Robert B, William S Cleveland, Jean E McRae, Irma Terpenning, et al. 1990. <span>“STL: A Seasonal-Trend Decomposition.”</span> <em>J. Off. Stat</em> 6 (1): 3–73.
+</div>
+<div id="ref-hochreiter1997lstm" class="csl-entry" role="listitem">
+Hochreiter, Sepp, and Jürgen Schmidhuber. 1997. <span>“Long Short-Term Memory.”</span> <em>Neural Computation</em> 9 (8): 1735–80.
+</div>
+<div id="ref-huang1998empirical" class="csl-entry" role="listitem">
+Huang, Norden E, Zheng Shen, Steven R Long, Manli C Wu, Hsing H Shih, Quanan Zheng, Nai-Chyuan Yen, Chi Chao Tung, and Henry H Liu. 1998. <span>“The Empirical Mode Decomposition and the Hilbert Spectrum for Nonlinear and Non-Stationary Time Series Analysis.”</span> <em>Proceedings of the Royal Society of London. Series A: Mathematical, Physical and Engineering Sciences</em> 454 (1971): 903–95.
+</div>
+<div id="ref-lee2021short" class="csl-entry" role="listitem">
+Lee, Daeyoung, Jae Won Jeong, and Guebin Choi. 2021. <span>“Short Term Prediction of PV Power Output Generation Using Hierarchical Probabilistic Model.”</span> <em>Energies</em> 14 (10): 2822.
+</div>
+<div id="ref-li2017diffusion" class="csl-entry" role="listitem">
+Li, Yaguang, Rose Yu, Cyrus Shahabi, and Yan Liu. 2017. <span>“Diffusion Convolutional Recurrent Neural Network: Data-Driven Traffic Forecasting.”</span> <em>arXiv Preprint arXiv:1707.01926</em>.
+</div>
+<div id="ref-mallat2002theory" class="csl-entry" role="listitem">
+Mallat, Stephane G. 2002. <span>“A Theory for Multiresolution Signal Decomposition: The Wavelet Representation.”</span> <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em> 11 (7): 674–93.
+</div>
+<div id="ref-digital_typhoon" class="csl-entry" role="listitem">
+National Institute of Informatics. 2022. <span>“Digital Typhoon: Typhoon 202211 (HINNAMNOR).”</span> <a href="https://agora.ex.nii.ac.jp/digital-typhoon/summary/wnp/s/202211.html.en" class="uri">https://agora.ex.nii.ac.jp/digital-typhoon/summary/wnp/s/202211.html.en</a>.
+</div>
+<div id="ref-rozemberczki2021pytorch" class="csl-entry" role="listitem">
+Rozemberczki, Benedek, Paul Scherer, Yixuan He, George Panagopoulos, Alexander Riedel, Maria Astefanoaei, Oliver Kiss, et al. 2021. <span>“Pytorch Geometric Temporal: Spatiotemporal Signal Processing with Neural Machine Learning Models.”</span> In <em>Proceedings of the 30th ACM International Conference on Information &amp; Knowledge Management</em>, 4564–73.
+</div>
+<div id="ref-seo2018structured" class="csl-entry" role="listitem">
+Seo, Youngjoo, Michaël Defferrard, Pierre Vandergheynst, and Xavier Bresson. 2018. <span>“Structured Sequence Modeling with Graph Convolutional Recurrent Networks.”</span> In <em>International Conference on Neural Information Processing</em>, 362–73. Springer.
+</div>
+<div id="ref-zhao2019t" class="csl-entry" role="listitem">
+Zhao, Ling, Yujiao Song, Chao Zhang, Yu Liu, Pu Wang, Tao Lin, Min Deng, and Haifeng Li. 2019. <span>“T-GCN: A Temporal Graph Convolutional Network for Traffic Prediction.”</span> <em>IEEE Transactions on Intelligent Transportation Systems</em> 21 (9): 3848–58.
+</div>
+</div>
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="ebtsolar_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="ebtsolar_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="ebtsolar_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': true,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': true,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>

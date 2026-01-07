@@ -1,110 +1,132 @@
-/* custom.scss - Reveal.js 테마 정의 */
-
 /*-- scss:defaults --*/
-$headingColor: #ff6f61;
-$textColor: #333;
-$linkColor: #ff6f61;
-$linkHoverColor: #d64b40;
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
+
+$primary-font: 'Nanum Myeongjo', serif;
+$heading-font: 'Nanum Myeongjo', serif;
+$accent-font: 'Nanum Myeongjo', serif;
+$primary-color: #ff6f61;
+$hover-color: #d64b40;
+$background-color: #fcfcf7;
+$text-color: #555;
 
 /*-- scss:rules --*/
+
+/* 블록 수식 크게: $$ ... $$ */
+.math.display {
+  font-size: 1.2em !important;
+  margin: 1em 0 !important;
+}
+
+/* 인라인 수식은 약간 크게: $...$ */
+.math.inline {
+  font-size: 1.15em !important;
+}
+
+/* Reveal.js 슬라이드 전용 스타일 */
 .reveal {
-  font-family: 'NanumMyeongjo', serif;
-  background-color: $backgroundColor;
-  color: $textColor;
+  font-family: $primary-font;
+  background-color: $background-color;
+  color: $text-color;
 
-  * {
-    font-family: serif !important;
-  }
-
+  /* 슬라이드 제목 스타일 */
   h1, h2, h3, h4, h5, h6 {
-    color: $headingColor;
-    font-family: 'NanumMyeongjo', serif !important;
-    font-weight: bold !important;
+    font-family: $heading-font;
+    color: $primary-color;
+    text-shadow: none;
+    margin-bottom: 0.5em;
   }
 
+  /* 일반 텍스트 */
+  p {
+    color: #333;
+    font-family: $primary-font;
+    margin-bottom: 0.5em;
+  }
+
+  /* 목록 스타일 */
+  li {
+    font-family: $primary-font;
+    margin-bottom: 0.3em;
+  }
+
+  /* 링크 스타일 */
   a {
-    color: $linkColor;
     text-decoration: none;
+    color: $primary-color;
+    font-family: $accent-font;
     transition: color 0.3s ease;
 
     &:hover {
       text-decoration: underline;
-      color: $linkHoverColor;
+      color: $hover-color;
     }
   }
 
-  code {
-    background: #f2f2f2;
-    padding: 0.2em 0.4em;
-    border-radius: 4px;
-    font-size: 0.95em;
-    font-family: var(--r-code-font);
-  }
-
-  pre code {
-    background: #f2f2f2;
+  /* 코드 블록 스타일 */
+  pre {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 5px;
     padding: 1em;
-    display: block;
-    border-radius: 6px;
-    border-left: 4px solid $headingColor;
-  }
-
-  .math.display {
-    font-size: 1.2em;
     margin: 1em 0;
+    font-size: 0.8em;
   }
 
-  .math.inline {
-    font-size: 1.1em;
+  /* 인라인 코드 */
+  code {
+    background-color: rgba(255, 111, 97, 0.05) !important;
+    padding: 0.15em 0.3em !important;
+    border-radius: 4px !important;
+    font-size: 0.85em !important;
+    color: rgba(255, 111, 97, 0.9) !important;
+    border: 1px solid rgba(255, 111, 97, 0.2) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  /* 더 강한 선택자로 인라인 코드 스타일링 */
+  p code, li code, div code, span code {
+    background-color: rgba(255, 111, 97, 0.05) !important;
+    padding: 0.15em 0.3em !important;
+    border-radius: 4px !important;
+    font-size: 0.85em !important;
+    color: rgba(255, 111, 97, 0.9) !important;
+    border: 1px solid rgba(255, 111, 97, 0.2) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  /* 테이블 스타일 */
+  table {
+    font-family: $primary-font;
+  }
+
+  table td, table th {
+    text-align: left !important;
   }
 }
 
-.reveal h1 {
-  font-size: 2.2em !important;
+/* 슬라이드 번호 스타일 */
+.reveal .slide-number {
+  color: $primary-color !important;
+  font-family: $accent-font;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  bottom: 12px !important;
+  right: 12px !important;
+  position: fixed !important;
+  z-index: 1000 !important;
 }
 
-.reveal h2 {
-  font-size: 1.8em !important;
+/* 진행 바 스타일 */
+.reveal .progress {
+  color: $primary-color;
 }
 
-.reveal h3 {
-  font-size: 1.4em !important;
-}
-
-.reveal h4, h5, h6 {
-  font-size: 1.1em !important;
-}
-
-.reveal h2, h3, h4, h5, h6 {
-  margin-bottom: 0.7em !important;
-  margin-left: -0.05em !important;
-}
-
-table.dataframe {
-  max-width: 100%;
-  overflow-x: auto;
-  font-size: 0.5em;
-}
-
-/* 코드 인라인 및 블록 모두에 명시적으로 적용 */
-.reveal code,
-.reveal pre code,
-.reveal .cell-code,
-.reveal .sourceCode {
-  font-size: 0.9em !important;
-}
-
-.reveal code {
-  background-color: #f4f4f4;
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
-  font-size: 1em;
-  font-family: 'Fira Code', 'Courier New', monospace;
-  color: #d63384;  /* 예: 진한 핑크/보라 계열 */
-}
-
-/* 테이블 전체 왼쪽 정렬 */
-.reveal table td, 
-.reveal table th {
-  text-align: left !important;
+/* 네비게이션 화살표 스타일 */
+.reveal .controls {
+  color: $primary-color;
 }
