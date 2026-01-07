@@ -33,7 +33,7 @@ format:
 
 :::: {.columns}
 ::: {.column width="60%"}
-![서울 지역 태양복사량 시계열](figs/fig1.pdf){width="100%"}
+![서울 지역 태양복사량 시계열](figs/fig1.png){width="100%"}
 :::
 ::: {.column width="40%"}
 **이중 구조의 공존**
@@ -49,7 +49,7 @@ format:
 
 :::: {.columns}
 ::: {.column width="60%"}
-![다지역 태양복사량 비교](figs/fig2.pdf){width="100%"}
+![다지역 태양복사량 비교](figs/fig2.png){width="100%"}
 :::
 ::: {.column width="40%"}
 - 지리적으로 가까운 지역은 유사한 패턴
@@ -64,7 +64,7 @@ format:
 
 :::: {.columns}
 ::: {.column width="60%"}
-![거리는 비슷하지만 패턴은 다른 두 쌍](figs/fig3.pdf){width="100%"}
+![거리는 비슷하지만 패턴은 다른 두 쌍](figs/fig3.png){width="100%"}
 :::
 ::: {.column width="40%"}
 **비교: 두 지역 쌍**
@@ -82,7 +82,7 @@ format:
 
 :::: {.columns}
 ::: {.column width="50%"}
-![전국 태양복사량 상관행렬](figs/fig4.pdf){width="90%"}
+![전국 태양복사량 상관행렬](figs/fig4.png){width="90%"}
 :::
 ::: {.column width="50%"}
 **문제점**
@@ -99,7 +99,7 @@ format:
 
 :::: {.columns}
 ::: {.column width="50%"}
-![서울-흑산도 vs 고창-영광군](figs/fig5.pdf){width="100%"}
+![서울-흑산도 vs 고창-영광군](figs/fig5.png){width="100%"}
 :::
 ::: {.column width="50%"}
 | 지역 쌍 | 상관계수 | 실제 패턴 |
@@ -117,7 +117,7 @@ format:
 
 :::: {.columns}
 ::: {.column width="60%"}
-![일사량 차이 히스토그램](figs/fig6.pdf){width="100%"}
+![일사량 차이 히스토그램](figs/fig6.png){width="100%"}
 :::
 ::: {.column width="40%"}
 - 차이값이 0에 집중 → 유사해 보임
@@ -144,7 +144,7 @@ format:
 
 ## EBT 분해 과정
 
-![EBT 분해 과정 시각화](figs/sec32_fig1.pdf){width="100%"}
+![EBT 분해 과정 시각화](figs/sec32_fig1.png){width="100%"}
 
 - **왼쪽**: Elastic Band 구성 (24개 밴드) → Upper Envelope 추출
 - **오른쪽 상단**: 진폭 변조 성분 $y_{v,t}^U$ (기상 변동 반영)
@@ -152,7 +152,7 @@ format:
 
 ## EBT 분해 후 상관구조
 
-![분해 후 상관구조 비교](figs/corr_grid_plot_v3.pdf){width="100%"}
+![분해 후 상관구조 비교](figs/corr_grid_plot_v3.png){width="100%"}
 
 **핵심 발견**
 
@@ -170,7 +170,7 @@ format:
 
 ## 전체 프레임워크
 
-![제안 프레임워크: EBT 분해 → 이중 그래프 구성 → STGNN 학습 → 재결합](pipeline.pdf){width="85%"}
+![제안 프레임워크: EBT 분해 → 이중 그래프 구성 → STGNN 학습 → 재결합](pipeline.png){width="85%"}
 
 ## STGNN 모델 비교
 
@@ -235,7 +235,7 @@ format:
 
 ## 태풍 힌남노 기간 성능
 
-![태풍 영향 상위 9개 지역](figs/251121_top9_typhoon_map_timeseries_geojson.pdf){width="100%"}
+![태풍 영향 상위 9개 지역](figs/251121_top9_typhoon_map_timeseries_geojson.png){width="100%"}
 
 ## 태풍 기간 개선율 상위 지역
 
@@ -297,7 +297,7 @@ format:
 
 ## Figure A1: Raw Scale 분해 비교
 
-![Raw scale 분해 비교 (서울, 2022-09-01 ~ 09-15)](figs/A1_fig1.pdf){width="90%"}
+![Raw scale 분해 비교 (서울, 2022-09-01 ~ 09-15)](figs/A1_fig1.png){width="90%"}
 
 - **EBT**: 진폭 × 주기로 깔끔하게 분해
 - **STL**: Residual에 일일 피크 잔존, 음수 발생
@@ -305,7 +305,7 @@ format:
 
 ## Figure A2: Log Scale (곱셈) 분해 비교
 
-![Log scale 분해 비교 (서울, 2022-09-01 ~ 09-15)](figs/A1_fig2.pdf){width="90%"}
+![Log scale 분해 비교 (서울, 2022-09-01 ~ 09-15)](figs/A1_fig2.png){width="90%"}
 
 - Log 변환 후에도 **EBT만** 깔끔한 2성분 분해
 - STL/EMD/Wavelet은 여전히 주기 성분 분리 실패
