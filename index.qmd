@@ -1,0 +1,360 @@
+---
+title: "Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction"
+subtitle: "다중척도 세미나"
+author: "최규빈"
+institute: "전북대학교 통계학과"
+date: "2026-01-07"
+format:
+  revealjs:
+    theme: default
+    slide-number: true
+    chalkboard: true
+    preview-links: auto
+    logo: ""
+    footer: "EBT + STGNN for Solar Forecasting"
+    transition: slide
+    width: 1600
+    height: 900
+---
+
+# 연구 배경
+
+## 태양광 발전의 중요성
+
+- **재생에너지의 핵심**: 2050 탄소중립 시나리오에서 태양광은 전체 발전량의 30% 이상 예상 (IEA)
+- **분산형 전원의 대표 사례**: 지역 단위 전력 생산/소비 가능
+- **핵심 문제**: 태양복사량의 **변동성** → 전력망 안정성 저해
+
+::: {.callout-important}
+정확한 태양복사량 예측이 스마트 그리드 에너지 관리의 핵심
+:::
+
+## 태양복사량 시계열의 특성
+
+:::: {.columns}
+::: {.column width="60%"}
+![서울 지역 태양복사량 시계열](../../paper/251230-CMES-clean/Figs/fig1.pdf){width="100%"}
+:::
+::: {.column width="40%"}
+**이중 구조의 공존**
+
+1. **강한 일일 주기성**: 낮에는 양(+), 밤에는 0
+2. **불규칙한 변동성**: 구름, 강수 등 기상 조건
+
+→ 단순한 시계열 모델로는 한계
+:::
+::::
+
+## 지역 간 공간적 상관성
+
+:::: {.columns}
+::: {.column width="60%"}
+![다지역 태양복사량 비교](../../paper/251230-CMES-clean/Figs/fig2.pdf){width="100%"}
+:::
+::: {.column width="40%"}
+- 지리적으로 가까운 지역은 유사한 패턴
+- 구름 이동, 대기 순환, 지형 요인의 영향
+- **공간 정보 활용**이 예측 정확도 향상에 기여
+:::
+::::
+
+# 기존 방법의 한계
+
+## 거리 기반 그래프 정의의 문제
+
+:::: {.columns}
+::: {.column width="60%"}
+![거리는 비슷하지만 패턴은 다른 두 쌍](../../paper/251230-CMES-clean/Figs/fig3.pdf){width="100%"}
+:::
+::: {.column width="40%"}
+**비교: 두 지역 쌍**
+
+| 지역 쌍 | 거리 | 유사성 |
+|---------|------|--------|
+| 대전-서산 | 96.2 km | **낮음** |
+| 철원-인천 | 94.9 km | **높음** |
+
+→ 물리적 거리만으로는 기후적 유사성 설명 불가
+:::
+::::
+
+## 가짜 상관성 (Spurious Correlation) 문제
+
+:::: {.columns}
+::: {.column width="50%"}
+![전국 태양복사량 상관행렬](../../paper/251230-CMES-clean/Figs/fig4.pdf){width="90%"}
+:::
+::: {.column width="50%"}
+**문제점**
+
+- 대부분 지역 쌍에서 **매우 높은 상관** (최저 0.6422)
+- 직관적으로 기대되는 수준보다 **지나치게 높음**
+- 실제 기후적 유사성과 **불일치**
+
+**원인**: 밤에 모든 지역이 0이 되는 **주기성**이 상관을 인위적으로 높임
+:::
+::::
+
+## 가짜 상관성의 시각화
+
+:::: {.columns}
+::: {.column width="50%"}
+![서울-흑산도 vs 고창-영광군](../../paper/251230-CMES-clean/Figs/fig5.pdf){width="100%"}
+:::
+::: {.column width="50%"}
+| 지역 쌍 | 상관계수 | 실제 패턴 |
+|---------|----------|-----------|
+| 고창-영광군 | 0.9681 | 매우 유사 |
+| 서울-흑산도 | 0.6422 | **상반됨** |
+
+서울이 높을 때 흑산도는 낮고, 그 반대도 발생
+
+→ **단순 상관계수의 한계**
+:::
+::::
+
+## 히스토그램으로 본 가짜 상관성
+
+:::: {.columns}
+::: {.column width="60%"}
+![일사량 차이 히스토그램](../../paper/251230-CMES-clean/Figs/fig6.pdf){width="100%"}
+:::
+::: {.column width="40%"}
+- 차이값이 0에 집중 → 유사해 보임
+- **원인**: 밤 시간대에 둘 다 0
+- 실제 기후적 동조성이 아닌 **주기성의 착시**
+:::
+::::
+
+# 제안 방법: EBT + STGNN
+
+## 핵심 아이디어
+
+::: {.callout-tip}
+## Elastic-Band Transform (EBT)
+태양복사량을 **곱셈 형태**로 분해: $y_{v,t} = y_{v,t}^U \times y_{v,t}^P$
+:::
+
+| 성분 | 의미 | 특성 |
+|------|------|------|
+| $y_{v,t}^U$ | **진폭 변조 (Amplitude)** | 기상 조건에 따른 최대 가능 복사량 |
+| $y_{v,t}^P$ | **주기 성분 (Periodic)** | 정규화된 일일 패턴 ($\in [0,1]$) |
+
+→ 각 성분을 **독립적인 STGNN**으로 모델링
+
+## EBT 분해 과정
+
+![EBT 분해 과정 시각화](../../paper/251230-CMES-clean/Figs/sec32_fig1.pdf){width="100%"}
+
+- **왼쪽**: Elastic Band 구성 (24개 밴드) → Upper Envelope 추출
+- **오른쪽 상단**: 진폭 변조 성분 $y_{v,t}^U$ (기상 변동 반영)
+- **오른쪽 하단**: 주기 성분 $y_{v,t}^P$ (태양 고도 패턴)
+
+## EBT 분해 후 상관구조
+
+![분해 후 상관구조 비교](../../paper/251230-CMES-clean/Figs/corr_grid_plot_v3.pdf){width="100%"}
+
+**핵심 발견**
+
+- $r_{v,s}^P \approx 1$: 주기 성분은 전국 거의 동일 (경도에 의해 결정)
+- $r_{v,s}^U$: 진폭 성분은 **지역 블록 구조** → 진정한 기후적 유사성 반영
+
+## 이중 그래프 구조 (Dual Graph Structure)
+
+| 성분 | 그래프 | 특성 |
+|------|--------|------|
+| $y_{v,t}^P$ | **Dense** (전체 연결) | 모든 지역이 유사 ($r \approx 1$) |
+| $y_{v,t}^U$ | **Sparse** (선택적 연결) | 기후적으로 유사한 지역만 연결 |
+
+→ 성분별로 **최적화된 그래프 구조** 사용
+
+## 전체 프레임워크
+
+![제안 프레임워크: EBT 분해 → 이중 그래프 구성 → STGNN 학습 → 재결합](pipeline.pdf){width="85%"}
+
+## STGNN 모델 비교
+
+| Model | Temporal | GNN Layer | Key Characteristics |
+|-------|----------|-----------|---------------------|
+| **GConvGRU** | GRU | Chebyshev | Spectral conv in GRU gates |
+| **GConvLSTM** | LSTM | Chebyshev | Spectral conv with peephole |
+| **T-GCN** | GRU | GCN | Lightweight, first-order approx |
+| **DCRNN** | GRU | DiffConv | Bidirectional random walks |
+
+# 실험 결과
+
+## 실험 설정
+
+- **데이터**: 44개 지역, 2,568 시점 (약 107일)
+- **학습/테스트**: 80% / 20%
+- **테스트 기간 특징**: 2022년 9월 초 **태풍 힌남노** 포함
+
+::: {.callout-warning}
+태풍 힌남노: 한반도 직격, 순간 최대 풍속 40-50 m/s, 극단적 일사량 변동
+:::
+
+## 성능 비교: GConvGRU
+
+| Lag | Filters | Classic | Proposed (L,L) | **Proposed (4,L)** |
+|-----|---------|---------|----------------|-------------------|
+| 8 | 32 | 0.0541 | 0.0408 | **0.0400** |
+| 12 | 32 | 0.0549 | 0.0427 | **0.0411** |
+| 24 | 32 | 0.0677 | 0.0503 | **0.0472** |
+
+- **Proposed (4,L)**: $y^U$는 lag 4, $y^P$는 lag L
+- 모든 설정에서 **일관된 성능 향상**
+- 최대 **30% 이상** MSE 감소
+
+## 성능 비교: GConvLSTM
+
+| Lag | Filters | Classic | Proposed (L,L) | **Proposed (4,L)** |
+|-----|---------|---------|----------------|-------------------|
+| 8 | 32 | 0.0525 | 0.0419 | **0.0402** |
+| 12 | 32 | 0.0534 | 0.0425 | **0.0419** |
+| 24 | 32 | 0.0644 | 0.0486 | **0.0463** |
+
+- GConvGRU와 유사하게 **최고 성능** 달성
+- 표준편차도 매우 낮음 (< 0.0005) → **안정적 학습**
+
+## 비대칭 Lag의 효과
+
+::: {.callout-note}
+## 핵심 발견
+진폭 성분 $y^U$는 **단순한 시간 구조** → 짧은 lag (4)로 충분
+:::
+
+**GConvGRU (lag 24, 24 filters) 예시**
+
+| 방법 | MSE | 표준편차 |
+|------|-----|----------|
+| Classic | 0.0675 | 0.0024 |
+| Proposed (L,L) | 0.0507 | 0.0026 |
+| **Proposed (4,L)** | **0.0470** | **0.0008** |
+
+→ 정확도 향상 + **학습 안정성** 동시 확보
+
+## 태풍 힌남노 기간 성능
+
+![태풍 영향 상위 9개 지역](../../paper/251230-CMES-clean/Figs/251121_top9_typhoon_map_timeseries_geojson.pdf){width="100%"}
+
+## 태풍 기간 개선율 상위 지역
+
+| Rank | Region | MSE (Classic) | MSE (Proposed) | **Improvement** |
+|------|--------|---------------|----------------|-----------------|
+| 1 | 경주시 | 0.0791 | 0.0436 | **44.9%** |
+| 2 | 함양군 | 0.0596 | 0.0343 | **42.5%** |
+| 3 | 창원 | 0.0644 | 0.0375 | **41.8%** |
+| 4 | 의령군 | 0.0561 | 0.0353 | **37.1%** |
+| 5 | 부산 | 0.0753 | 0.0493 | **34.5%** |
+
+→ 태풍 경로 지역에서 **32-45% 개선**
+
+## 통계적 유의성
+
+**Diebold-Mariano Test 결과**
+
+- 48개 설정 중 **47개 (97.9%)** 에서 $p < 0.01$
+- Median p-value < $10^{-6}$
+
+| Model | Avg DM Statistic | Avg Improvement |
+|-------|------------------|-----------------|
+| GConvGRU | 21.26 | **25.25%** |
+| GConvLSTM | 19.53 | 23.14% |
+| DCRNN | 13.84 | 16.55% |
+| T-GCN | 5.88 | 4.33% |
+
+# 결론
+
+## 주요 기여
+
+1. **곱셈 분해의 원리**: 태양복사량은 주기 × 진폭으로 분해되어야 함
+   - 가산 모델의 가짜 상관성 문제 해결
+
+2. **비대칭 모델링**: 성분별 특성에 맞는 독립적 최적화
+   - 진폭: 짧은 lag, sparse graph
+   - 주기: 긴 lag, dense graph
+
+3. **극한 기상 강건성**: 태풍 기간에도 32-45% 성능 향상
+
+## 향후 연구 방향
+
+- 다른 주기성 신호로의 확장 (기온, 풍력 등)
+- 실시간 운영 시스템 적용
+- 더 다양한 STGNN 아키텍처 탐색
+
+# Appendix
+
+## 왜 EBT인가? - 분해 방법 비교
+
+**비교 대상**: STL, EMD, Wavelet vs EBT
+
+| 방법 | 분해 형태 | 문제점 |
+|------|-----------|--------|
+| STL | 가산 (Trend + Seasonal + Residual) | Residual에 일일 주기 잔존 |
+| EMD | 가산 (8-12개 IMF) | 어떤 성분이 주기인지 불명확 |
+| Wavelet | 가산 (A4 + D1-D4) | 주기 에너지가 여러 레벨에 분산 |
+| **EBT** | **곱셈** ($y^U \times y^P$) | **깔끔한 2성분 분해** |
+
+## Figure A1: Raw Scale 분해 비교
+
+![Raw scale 분해 비교 (서울, 2022-09-01 ~ 09-15)](../../paper/251230-CMES-clean/Figs/A1_fig1.pdf){width="90%"}
+
+- **EBT**: 진폭 × 주기로 깔끔하게 분해
+- **STL**: Residual에 일일 피크 잔존, 음수 발생
+- **EMD/Wavelet**: 주기 성분이 여러 term에 분산
+
+## Figure A2: Log Scale (곱셈) 분해 비교
+
+![Log scale 분해 비교 (서울, 2022-09-01 ~ 09-15)](../../paper/251230-CMES-clean/Figs/A1_fig2.pdf){width="90%"}
+
+- Log 변환 후에도 **EBT만** 깔끔한 2성분 분해
+- STL/EMD/Wavelet은 여전히 주기 성분 분리 실패
+
+## Table A1: Non-Spatial 모델과의 비교
+
+**TCN, LSTM, CNN-LSTM** (2000 epochs, 10회 반복)
+
+:::: {.columns}
+::: {.column width="33%"}
+**TCN**
+
+| Lag | F=32 MSE |
+|-----|----------|
+| 8 | 0.0605 |
+| 12 | 0.0606 |
+| 24 | **0.0601** |
+:::
+::: {.column width="33%"}
+**LSTM**
+
+| Lag | H=32 MSE |
+|-----|----------|
+| 8 | **0.0841** |
+| 12 | 0.0927 |
+| 24 | 0.0995 |
+:::
+::: {.column width="33%"}
+**CNN-LSTM**
+
+| Lag | F=32 MSE |
+|-----|----------|
+| 8 | **0.0975** |
+| 12 | 0.1005 |
+| 24 | 0.1008 |
+:::
+::::
+
+::: {.callout-warning}
+**Best Non-Spatial**: TCN (MSE=0.0601) vs **Proposed STGNN**: GConvGRU (MSE=0.0400)
+
+→ **공간 상관 모델링이 필수**
+:::
+
+# 감사합니다
+
+::: {.callout-tip}
+## 논문 정보
+**"Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction"**
+
+*CMES-Computer Modeling in Engineering & Sciences*, 2025
+:::
