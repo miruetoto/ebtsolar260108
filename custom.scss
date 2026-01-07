@@ -1,0 +1,110 @@
+/* custom.scss - Reveal.js 테마 정의 */
+
+/*-- scss:defaults --*/
+$headingColor: #ff6f61;
+$textColor: #333;
+$linkColor: #ff6f61;
+$linkHoverColor: #d64b40;
+
+/*-- scss:rules --*/
+.reveal {
+  font-family: 'NanumMyeongjo', serif;
+  background-color: $backgroundColor;
+  color: $textColor;
+
+  * {
+    font-family: serif !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: $headingColor;
+    font-family: 'NanumMyeongjo', serif !important;
+    font-weight: bold !important;
+  }
+
+  a {
+    color: $linkColor;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      text-decoration: underline;
+      color: $linkHoverColor;
+    }
+  }
+
+  code {
+    background: #f2f2f2;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-size: 0.95em;
+    font-family: var(--r-code-font);
+  }
+
+  pre code {
+    background: #f2f2f2;
+    padding: 1em;
+    display: block;
+    border-radius: 6px;
+    border-left: 4px solid $headingColor;
+  }
+
+  .math.display {
+    font-size: 1.2em;
+    margin: 1em 0;
+  }
+
+  .math.inline {
+    font-size: 1.1em;
+  }
+}
+
+.reveal h1 {
+  font-size: 2.2em !important;
+}
+
+.reveal h2 {
+  font-size: 1.8em !important;
+}
+
+.reveal h3 {
+  font-size: 1.4em !important;
+}
+
+.reveal h4, h5, h6 {
+  font-size: 1.1em !important;
+}
+
+.reveal h2, h3, h4, h5, h6 {
+  margin-bottom: 0.7em !important;
+  margin-left: -0.05em !important;
+}
+
+table.dataframe {
+  max-width: 100%;
+  overflow-x: auto;
+  font-size: 0.5em;
+}
+
+/* 코드 인라인 및 블록 모두에 명시적으로 적용 */
+.reveal code,
+.reveal pre code,
+.reveal .cell-code,
+.reveal .sourceCode {
+  font-size: 0.9em !important;
+}
+
+.reveal code {
+  background-color: #f4f4f4;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 1em;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  color: #d63384;  /* 예: 진한 핑크/보라 계열 */
+}
+
+/* 테이블 전체 왼쪽 정렬 */
+.reveal table td, 
+.reveal table th {
+  text-align: left !important;
+}

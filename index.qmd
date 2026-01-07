@@ -6,15 +6,18 @@ institute: "전북대학교 통계학과"
 date: "2026-01-07"
 format:
   revealjs:
-    theme: default
+    theme: custom.scss
     slide-number: true
-    chalkboard: true
+    chalkboard: false
     preview-links: auto
-    logo: ""
     footer: "EBT + STGNN for Solar Forecasting"
     transition: slide
     width: 1600
     height: 900
+    smaller: true
+    scrollable: false
+    fig-format: png
+    fig-dpi: 300
 ---
 
 # 연구 배경
