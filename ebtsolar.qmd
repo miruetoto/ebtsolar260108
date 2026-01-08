@@ -1,10 +1,11 @@
 ---
-title: "Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction"
-subtitle: "Multiscale Workshop 2026"
-author: "Guebin Choi"
-institute: "Department of Statistics, Jeonbuk National University"
+title: "Elastic-Band Transform–Integrated Spatio-Temporal Graph Neural Networks for Solar Radiation Forecasting"
+subtitle: "다중척도워크샵2026"
+author: "최규빈"
+institute: "전북대학교 통계학과"
 date: "2026-01-07"
 bibliography: ref.bib
+csl: apa.csl
 format:
   revealjs:
     theme: custom.scss
@@ -22,157 +23,200 @@ format:
     html-math-method: mathjax
 ---
 
-## Characteristics of Solar Irradiance Time Series
+## Table of Contents
+
+1. **Introduction**
+   - Characteristics / Problem / Solution
+   - STGNN and Adjacency Matrix Estimation
+
+2. **Proposed Method**
+   - Multiplicative Decomposition (EBT)
+   - Overall Framework and Advantages
+
+3. **Experiments**
+   - Experimental Setup and Results
+   - Typhoon Hinnamnor Period Analysis
+
+4. **Discussions**
+   - Key Contributions
+   - Reviewer Questions
+
+# Introduction
+
+## Characteristics of Solar Irradiance Data
 
 :::: {.columns}
 ::: {.column width="60%"}
-![**Figure:** Example of solar irradiance time series observed in Seoul. Strong daily periodicity coexists with irregular fluctuations caused by weather conditions.](figs/fig1.png){width="100%"}
+![Figure: Solar irradiance time series observed in Seoul. Strong daily periodicity coexists with irregular fluctuations.](figs/fig1.png){width="100%"}
 :::
 ::: {.column width="40%"}
-**Strong periodicity, yet challenging structure for analysis**
+**Simple data, but challenging to analyze**
 
-1. **Not a sinusoid**: Half-wave pattern → Limitations in applying Fourier-based decomposition
+**1. Strong periodicity**
 
-2. **Not an exact period**: Sunrise/sunset times vary by season → Not strictly a 24-hour cycle
+- Clear daily periodic pattern (sunrise to sunset)
 
-**Nighttime zero-inflation problem**
+**2. Zero-Value Intervals at Night**
 
-- Irradiance is **structurally zero** during nighttime → Standard time series methods have limited applicability
-- Models assuming continuous time series (AR, LSTM) face difficulties
+- Solar irradiance is structurally zero during nighttime
 :::
 ::::
 
-## Problem: Performance Improvement Requires Reflecting Data Characteristics
+## Problem
 
-> **Key insight**: Without considering the structural characteristics of solar irradiance (daily periodicity, nighttime zeros), fundamental limitations exist in improving prediction performance
+**Traditional time series models are not applicable**
 
-**Limitations of traditional time series models**
+- Traditional models such as AR(Auto-Regressive) and ARMA(Auto-Regressive Moving Average) require stationarity assumptions, but the data violates these due to nighttime zero intervals
 
-- **Statistical models**: ARMA, ARIMA violate stationarity assumptions due to nighttime zero intervals
-- **Deep learning models**: TCN, LSTM, CNN-LSTM also assume continuous time series structure → Learning distortion in zero-value intervals
+**Deep learning models are also difficult to apply**
 
-**What if we exclude nighttime zero intervals?**
+- LSTM(Long Short-Term Memory), TCN(Temporal Convolutional Network), etc. have no assumption issues, but require excessive training time to accurately learn nighttime zeros
 
-1. **Seasonality issue**: Sunrise/sunset times differ by season → Cannot uniformly exclude "7PM~6AM"
-2. **Weather condition confusion**: Excluding intervals where irradiance ≈ 0 → Risk of **also excluding low irradiance on cloudy days**
+**What if we exclude nighttime zero intervals for prediction?**
 
-**What if we decompose the daily periodic component?**
+- Sunrise/sunset times vary by season, making uniform exclusion like "7 PM to 6 AM" impossible
+- Excluding zero-value intervals risks also excluding low irradiance during cloudy daytime periods
 
-- Existing decomposition methods (STL, EMD, Wavelet) **cannot clearly separate** the daily periodic component
+**What if we decompose and remove the periodic component?**
 
-## Solution: Paradigm Shift to Hierarchical Modeling
+- Half-wave shape makes sinusoid-based decomposition difficult
+- The periodicity is not "added" on top of the signal (additive), so STL(Seasonal-Trend decomposition using Loess), EMD(Empirical Mode Decomposition), Wavelet, etc. cannot cleanly separate it
 
-> **Key perspective**: Not simply "previous time → next time" direct prediction, but a **dual structure of "sunrise determination + conditional irradiance prediction"**
+## A Possible Approach (Previous Work)
 
-**Modeling strategy**
+> Rather than predicting the next time point from previous observations, it is more reasonable to **first predict whether the sun will be up at the next time point**, and then predict solar irradiance conditional on the sun being up. 
 
-- First determine **sunrise indicator** for the next time point
-- Model the **conditional distribution** of solar irradiance given sunrise condition
+**Key Insight**
 
-**Prior work** [@lee2021short]
+- Treat solar irradiance prediction as a **two-stage problem**:
+  1. Is the sun up or not?
+  2. If up, what is the irradiance level?
 
-- Proposed a mixture model introducing **latent variables** representing sunrise status
-- Parameter estimation and prediction via **EM algorithm (Expectation-Maximization)**
+**Prior Research** [@lee2021short]
 
-## This Study: Single-Site Prediction → Multi-Regional Simultaneous Forecasting
+- Introduced a **latent variable** $Z_t \in \{0, 1\}$ to represent sun-up status
+- Proposed a prediction model using the **EM(Expectation-Maximization) algorithm** to jointly estimate the latent state and irradiance
+
+## This Study: Spatio-Temporal Extension
 
 :::: {.columns}
 ::: {.column width="60%"}
-![**Figure:** Solar irradiance time series observed simultaneously across multiple regions in Korea. Geographically closer locations exhibit higher similarity in their patterns.](figs/fig2.png){width="100%"}
+![Figure: Solar irradiance across multiple regions in Korea. Geographically closer locations exhibit higher similarity.](figs/fig2.png){width="100%"}
 :::
 ::: {.column width="40%"}
-**Extension of problem definition**
+**From single time series to multiple regions**
 
-- Single-site time series prediction → **Multivariate spatio-temporal forecasting**
-- Temporal data → Problem redefinition as **Spatio-Temporal data**
+- Previous work: prediction for a **single location**
+- This study: **simultaneous prediction for 44 stations** across Korea
 
-**Spatial Dependency**
+**Data**
 
-- Geographically adjacent regions **share similar meteorological patterns**
+- Hourly solar irradiance from 44 weather stations
+- Approximately 107 days of observations
 
-**Rationale for STGNN (Spatio-Temporal Graph Neural Network)**
+**Modeling as a Graph**
 
-- **Explicit modeling** of inter-regional spatial dependencies via graph structure
-- Station = node, observation = node signal
-
-**Graph-based data representation**
-
-$$\mathcal{G} = (\mathcal{V}, \mathbf{A}, \{y_{v,t}\})$$
+- $\mathcal{G}_t = (\mathcal{V}, \mathbf{A}, \{y_{v,t}\})$
+- $\mathcal{V}$: set of 44 stations (nodes)
+- $\mathbf{A}$: adjacency matrix representing connectivity between stations
+- $y_{v,t}$: solar irradiance at station $v$ and time $t$
 :::
 ::::
 
-## Core Challenge in STGNN: Defining the Adjacency Matrix
+# Related Works
 
-> **Key issue**: Node connectivity must be defined prior to STGNN application
+## Solar Irradiance Forecasting: Single-Site Models
 
-**Absence of adjacency matrix $\mathbf{A}$**
+**Deep learning approaches for individual locations**
 
-- Most STGNN studies **assume** the adjacency matrix $\mathbf{A}$ is **given a priori**
-- However, in real applications, this information is often **not explicitly provided**
+- LSTM(Long Short-Term Memory) [@hochreiter1997lstm], CNN-LSTM [@agga2021short], TCN(Temporal Convolutional Network) [@bai2018tcn]
+- Temporal Fusion Transformer [@lim2021temporal]: state-of-the-art in multi-horizon forecasting
 
-**Differences in adjacency matrix definition across application domains**
+**Limitation**
+
+- Cannot explicitly model **spatial correlations** across multiple measurement stations
+- Solar irradiance is affected by cloud movement, atmospheric circulation, and topography
+- Single-site models miss these **spatial dependencies**
+
+## Why STGNN is a Natural Choice
+
+**STGNN(Spatio-Temporal Graph Neural Network)**
+
+- Represent stations as **nodes**, learn **spatial** and **temporal** dynamics simultaneously
+- Successful in traffic [@li2017diffusion; @yu2017spatio], time series [@wu2019graph; @wu2020connecting], network dynamics [@cui2020learning]
+
+**STGNN for Solar/PV Forecasting**
+
+- Spatiotemporal GNN(st-GNN) for PV performance prediction [@khodayar2021spatio]: 316 systems, outperforms temporal-only models
+
+# Challenges in Graph Construction
+
+## Challenges in Applying STGNN
+
+**Key Issue**: STGNN cannot be directly applied to solar irradiance data
+
+**Absence of Adjacency Matrix $\mathbf{A}$**
+
+- STGNN typically **assumes** that node connectivity information $\mathbf{A}$ is **given**
+- However, this is generally **not provided information**
 
 <div style="width: fit-content; margin: auto;">
 
-| Domain | Adjacency Matrix $\mathbf{A}$ Definition |
+| Domain | Adjacency Matrix $\mathbf{A}$ |
 |:---:|:---|
-| Traffic networks | Road connectivity is **physically explicit** |
-| Meteorological observation networks | Inter-regional connectivity is **not self-evident** |
+| Traffic Networks | Road connectivity is **clearly given** |
+| Weather Observation Networks | Regional connectivity is **not given** |
 
 </div>
 
-**Therefore, the problem of estimating $\mathbf{A}$ from data arises**
+**Therefore, $\mathbf{A}$ must be estimated**
 
-## Method 1 for Estimating $\mathbf{A}$: Distance-Based Approach
+## Estimating $\mathbf{A}$ Method 1: Distance-Based
 
 :::: {.columns}
 ::: {.column width="60%"}
-![**Figure:** Comparison of solar irradiance patterns between 대전–서산 (96.2 km) and 철원–인천 (94.9 km). Although the geographical distances are nearly identical, the irradiance variations differ substantially.](figs/fig3.png){width="100%"}
+![Figure: Comparison of 대전–서산 (96.2 km) and 철원–인천 (94.9 km). Similar distance, but different pattern similarity.](figs/fig3.png){width="100%"}
 :::
 ::: {.column width="40%"}
-**Distance-based approach**
+**Distance-Based Estimation**
 
-- Define edge weights as a **function of geographical distance** (e.g., Gaussian kernel)
-- **Assumption**: Physical proximity ≈ pattern similarity
+- Assume nearby regions have similar solar irradiance 
 
-**Limitation: Distance ≠ Climatological Similarity**
+**But this assumption often fails**
 
-- Even with similar physical distances, climate patterns differ based on **topographical characteristics (coastal/inland, elevation, etc.)**
+- Even if distance is close, **different terrain leads to different climate characteristics**
 
 <div style="width: fit-content; margin: auto;">
 
-| Region pair | Distance | Pattern similarity |
+| Region Pair | Distance | Pattern Similarity |
 |:---:|:---:|:---|
-| 대전-서산 | 96.2 km | **Low** (서산: maritime climate) |
-| 철원-인천 | 94.9 km | **High** (similar climate zone) |
+| 대전-서산 | 96.2 km | **Low**  |
+| 철원-인천 | 94.9 km | **High** |
 
 </div>
 
-→ **Physical distance alone cannot sufficiently explain climatological similarity**
+Similar distance does not guarantee similar patterns
 :::
 ::::
 
-## Method 2 for Estimating $\mathbf{A}$: Correlation-Based Approach
+## Estimating $\mathbf{A}$ Method 2: Correlation-Based
 
 :::: {.columns}
 ::: {.column width="50%"}
-![**Figure:** Correlation matrix of solar irradiance among all stations in Korea. Overall correlations are very high, with the lowest value observed between 서울 and 흑산도 (0.6422).](figs/fig4.png){width="90%"}
+![Figure: Correlation matrix of solar irradiance among all stations. Overall correlations are very high.](figs/fig4.png){width="90%"}
 :::
 ::: {.column width="50%"}
-**Data-driven approach**
+**Correlation-Based Estimation**
 
-- Quantify similarity via **sample correlation coefficients** between time series
+- Correlation matrix of solar irradiance among 44 stations
 
-**Analysis results**
+**Problem**
 
-- **High correlations observed** among most of the 44 stations nationwide
-- Minimum: **$r = 0.6422$** between 서울 and 흑산도
-- **Significantly higher** than intuitive expectations
-- **Discrepancy** with actual climatological similarity
+- Most pairs show **very high correlation**
+- Even the **lowest correlation is 0.64** — unexpectedly high
+- Much higher than intuitively expected
+- Does not match actual climatic similarity between regions
 
-**Cause analysis**
-
-> **Nighttime zero-inflation** shared across all stations **artificially inflates** sample correlation coefficients
 :::
 ::::
 
@@ -180,126 +224,132 @@ $$\mathcal{G} = (\mathcal{V}, \mathbf{A}, \{y_{v,t}\})$$
 
 :::: {.columns}
 ::: {.column width="50%"}
-![**Figure:** Comparison of solar irradiance time series: 서울–흑산도 (top, correlation = 0.6422) and 고창–영광 (bottom, correlation = 0.9681).](figs/fig5.png){width="100%"}
+![Figure: 서울–흑산도 (r=0.6422) vs 고창–영광 (r=0.9681). High correlation doesn't mean similar patterns.](figs/fig5.png){width="100%"}
 :::
 ::: {.column width="50%"}
 
 <div style="width: fit-content; margin: auto;">
 
-| Region pair | Correlation | Actual pattern |
+| Region Pair | Correlation | Actual Pattern |
 |:---:|:---:|:---|
-| 고창-영광 | 0.9681 | High similarity (adjacent regions) |
-| 서울-흑산도 | 0.6422 | **Effectively inverse pattern** |
+| 고창–영광 | 0.9681 | High similarity |
+| 서울–흑산도 | 0.6422 | **Nearly opposite patterns** |
 
 </div>
 
-**서울-흑산도 case analysis**
+**서울–흑산도**
 
-- Visually shows patterns closer to **negative correlation**
-- Yet sample correlation coefficient is **positive at $r = 0.64$**
+- Patterns appear **nearly negatively correlated**
+- Yet the correlation coefficient is **0.64 — very high**
 
-**Problem from a modeling perspective**
+**Problem**
 
-If this correlation is directly reflected in the adjacency matrix, 흑산도 information is included with **weight 0.6** when predicting 서울
-
-→ Valid for nighttime prediction, but **acts as noise for daytime prediction**
+- If we apply a model directly, 서울 prediction would consider 흑산도 with **weight 0.6**
+- This might be useful for nighttime zeros, but **useless for daytime prediction**
 :::
 ::::
 
+# Proposed Method
+
 ## Proposed Method: Multiplicative Decomposition
 
-**Two perspectives on signal decomposition: Additive vs. Multiplicative models**
+**Our Goal: Decomposing Periodicity**
 
-Product-to-sum identity for trigonometric functions:
+- Spurious correlation arises due to the **periodic component** (nighttime zeros). The correlation we intuitively expect reflects **similarity excluding periodicity**
+- If we can **separate the periodic component** from the signal, the problem may be resolved
+
+**Preliminary: Signal decomposition is not limited to additive models**
 
 $$\cos(58\pi t) + \cos(62\pi t) = 2\cos(60\pi t) \cdot \cos(2\pi t)$$
 
-- **Left side**: **Additive combination** of two frequency components
-- **Right side**: **Multiplicative combination** of carrier and envelope
+- **Left-hand side**: Additive model (sum of two frequency components)
+- **Right-hand side**: Multiplicative model (carrier × envelope)
 
-**Multiplicative decomposition of solar irradiance time series**
+**Decompose solar irradiance multiplicatively**
 
 $$y_{v,t} = y_{v,t}^U \times y_{v,t}^P$$
 
 <div style="width: fit-content; margin: auto;">
 
-| Component | Physical meaning | Characteristics |
+| Component | Meaning | Characteristics |
 |:---:|:---|:---|
-| $y_{v,t}^U$ | **Amplitude Modulation** — reflects weather conditions | Upper envelope, slowly varying |
-| $y_{v,t}^P$ | **Periodic Component** — solar elevation pattern | Normalized daily pattern ($\in [0,1]$) |
+| $y_{v,t}^U$ | **Climate component** — reflects weather conditions | Upper envelope |
+| $y_{v,t}^P$ | **Periodic component** — sunrise/sunset pattern | Normalized daily cycle ($\in [0,1]$) |
 
 </div>
 
-## EBT (Elastic-Band Transform) Decomposition Algorithm {.scrollable}
+## EBT Decomposition Process {.scrollable}
 
 ::: {style="overflow-y: auto; max-height: 800px;"}
-![**Figure:** Illustration of the EBT decomposition process for solar irradiance time series. Left: Construction of elastic bands with τ=24 and extraction of the upper envelope (red curve). Right: Decomposed components showing the amplitude modulation component (top) and the normalized periodic component (bottom).](figs/sec32_fig1.png){width="100%"}
+![Figure: EBT decomposition process. Left: Elastic bands with τ=24 and upper envelope extraction. Right: Amplitude modulation $y^U$ (top) and periodic component $y^P$ (bottom).](figs/sec32_fig1.png){width="100%"}
 :::
 
-**EBT-based multiplicative decomposition** [@choi2023elastic; @choi2024decomposition]
+**Solved via EBT(Elastic-Band Transform)** [@choi2023elastic; @choi2024decomposition]
 
-- **Left panel**: Construct Elastic Bands with $\tau=24$ hour units → Extract Upper Envelope $u_{v,t}^{\mathbf{y}_v,\tau}$
-- **Top right**: Amplitude modulation component $y_{v,t}^U = u_{v,t}^{\mathbf{y}_v,\tau}$ — Maximum attainable irradiance given weather conditions
-- **Bottom right**: Periodic component $y_{v,t}^P = y_{v,t} / (y_{v,t}^U + \epsilon)$ — Normalized daily pattern from solar elevation
+- **Left**: Construct elastic bands with $\tau=24$ hourly intervals → extract upper envelope
+- **Top right**: Climate component $y_{v,t}^U$ — maximum achievable irradiance given weather
+- **Bottom right**: Periodic component $y_{v,t}^P$ — normalized sunrise/sunset pattern
 
-## Changes in Spatial Correlation Structure After Decomposition {.scrollable}
+## Correlation Structure After Decomposition {.scrollable}
 
 ::: {style="overflow-y: auto; max-height: 800px;"}
-![**Figure:** Spatial correlation structure of EBT-decomposed components. Top: Sample time series of $y_{v,t}$, $y_{v,t}^P$, and $y_{v,t}^U$ from seven regions. Bottom: Correlation matrices showing uniform high correlations for the periodic component and structured regional clustering for the amplitude modulation component.](figs/corr_grid_plot_v3.png){width="100%"}
+![Figure: Correlation structure comparison after decomposition. $y^P$: Dense (nationwide similarity). $y^U$: Sparse (climatologically similar regions only).](figs/corr_grid_plot_v3.png){width="100%"}
 :::
 
-**Verification of decomposition results**
+**Decomposition works well!**
 
-- **Periodic component** $y^P$: Correlation matrix exhibits **Dense** structure — Nearly identical patterns nationwide ($r_{v,s}^P \approx 1$)
-- **Amplitude modulation component** $y^U$: Correlation matrix exhibits **Sparse** structure — **Block structure** emerges among climatologically similar regions
+- **Periodic component** $y^P$: Correlation matrix becomes **denser** — nearly identical nationwide ($r \approx 1$)
+- **Climate component** $y^U$: Correlation matrix becomes **sparser** — high correlation only among climatically similar regions
 
-## Proposed Framework Overview {.scrollable}
+## Overall Framework {.scrollable}
 
 ::: {style="overflow-y: auto; max-height: 800px;"}
-![**Figure:** Process of decomposing the raw time series into a periodic component and an amplitude modulation component using the EBT, constructing separate graphs, applying STGNN-based models to each component independently, and recombining the two prediction results to obtain the final forecast.](pipeline.png){width="100%"}
+![Figure: Overall framework. Decompose with EBT, apply STGNN to each component separately, then recombine predictions.](pipeline.png){width="100%"}
 :::
 
-**Core strategy**: Apply independent STGNNs to each decomposed component, then recombine
+**Apply STGNN to each decomposed component, then recombine**
 
 $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
-## Advantages of the Proposed Framework
+## Advantages of the Proposed Method
 
-**1. Component-Specific Optimized Graph Structure**
-
-<div style="width: fit-content; margin: auto;">
-
-| Component | Graph structure | Rationale |
-|:---:|:---:|:---|
-| Periodic $y^P$ | **Dense** | Daily periodic pattern is similar nationwide ($r_{v,s}^P \approx 1$) → Utilize all regional information |
-| Amplitude $y^U$ | **Sparse** | Only climatologically similar regions have meaningful correlations → Selective information utilization |
-
-</div>
-
-**2. Reduced modeling complexity**
-
-- **Periodic component**: Regular pattern → Easy to learn
-- **Amplitude component**: Periodicity removed, **simplified temporal structure**
-
-**3. Component-specific hyperparameter optimization**
+**1. Reasonable Graph Connectivity**
 
 <div style="width: fit-content; margin: auto;">
 
-| Component | Optimal Lag | Number of filters |
+| Component | Graph | Reason |
 |:---:|:---:|:---|
-| Periodic $y^P$ | **lag = 24** (capture full daily cycle) | Many required |
-| Amplitude $y^U$ | **lag = 4** (short-term dependency sufficient) | Few sufficient |
+| Periodic $y^P$ | **Dense** | Sunrise/sunset pattern similar across all regions → consider all stations |
+| Climate $y^U$ | **Sparse** | Only climatically similar regions matter → fewer connections reasonable |
 
 </div>
+
+**2. Easier Prediction**
+
+- **Periodic component**: Highly regular → easy for the model to learn
+- **Climate component**: Removing periodicity simplifies the signal → easier to predict
+
+**3. Flexible and Easy Lag/Filter Selection**
+
+<div style="width: fit-content; margin: auto;">
+
+| Component | Optimal Lag | Number of Filters |
+|:---:|:---:|:---|
+| Periodic $y^P$ | **lag = 24** (full day) | More filters needed |
+| Climate $y^U$ | **lag = 4** (short-term sufficient) | Fewer filters sufficient |
+
+</div>
+
+# Experiments
 
 ## STGNN Architectures Used in Experiments
 
 <div style="width: fit-content; margin: auto;">
 
-| Model | Temporal | GNN Layer | Key characteristics |
+| Model | Temporal | GNN Layer | Characteristics |
 |:---:|:---:|:---:|:---|
-| **GConvGRU** | GRU | Chebyshev | Spectral graph convolution within GRU gates |
-| **GConvLSTM** | LSTM | Chebyshev | Includes peephole connection |
+| **GConvGRU** | GRU | Chebyshev | Spectral graph convolution |
+| **GConvLSTM** | LSTM | Chebyshev | Includes peephole connections |
 | **T-GCN** | GRU | GCN | Lightweight first-order approximation |
 | **DCRNN** | GRU | DiffConv | Bidirectional diffusion convolution |
 
@@ -309,9 +359,9 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 ## Experimental Setup
 
-- **Data**: 44 observation stations in South Korea, $T = 2{,}568$ time points (approximately 107 days of hourly observations)
+- **Data**: 44 weather stations in Korea, approximately 107 days of hourly observations
 - **Data split**: Training 80% / Test 20%
-- **Notable test period event**: **Typhoon Hinnamnor** in early September 2022 [@digital_typhoon]
+- **Test period event**: **Typhoon Hinnamnor** in early September 2022 [@digital_typhoon]
 
 **Comparison of three prediction strategies**
 
@@ -319,9 +369,9 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 | Strategy | Description |
 |:---:|:---|
-| **Classic** | Direct prediction of raw time series $y_{v,t}$ with single STGNN (baseline) |
-| **Proposed $(L,L)$** | Same lag $L$ applied to both components after EBT decomposition |
-| **Proposed $(4,L)$** | $y_{v,t}^U$ uses lag=4, $y_{v,t}^P$ uses lag=$L$ (asymmetric setting) |
+| **Classic** | Direct prediction of raw time series with a single STGNN |
+| **Proposed $(L,L)$** | Apply same lag to both components after EBT decomposition |
+| **Proposed $(4,L)$** | Climate component lag=4, periodic component lag=$L$ |
 
 </div>
 
@@ -346,17 +396,17 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 </div>
 
-→ **The proposed method shows consistent performance improvement over baseline across all settings** (approximately 20-30% MSE reduction)
+→ **Applying STGNN after EBT decomposition yields better performance overall** (approximately 20-30% MSE reduction)
 
-## Typhoon Hinnamnor Period: Robustness Under Extreme Weather {.scrollable}
+## Typhoon Hinnamnor Period {.scrollable}
 
 ::: {style="overflow-y: auto; max-height: 800px;"}
-![**Figure:** Top 9 regions by typhoon period improvement rate. Left: Geographical distribution. Right: Time series comparison during Typhoon Hinnamnor (Aug 30 – Sep 8, 2022). Red shading indicates core impact period (Sep 4–6).](figs/251121_top9_typhoon_map_timeseries_geojson.png){width="100%"}
+![Figure: Typhoon Hinnamnor period analysis. Top 9 regions with highest MSE reduction along the typhoon path.](figs/251121_top9_typhoon_map_timeseries_geojson.png){width="100%"}
 :::
 
-**Performance improvement of the proposed method is more pronounced under extreme weather conditions**
+**This improvement is especially pronounced during the Hinnamnor period**
 
-## Regional Performance Improvement During Typhoon Period (MSE Reduction)
+## Regional Performance Improvement During Typhoon Period
 
 <div style="width: fit-content; margin: auto;">
 
@@ -374,60 +424,60 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 </div>
 
-→ Achieved **32-45% MSE reduction** in regions along the typhoon path (southeastern Korean Peninsula)
+→ **32-45% MSE reduction** along the typhoon path (southeastern Korean Peninsula)
 
-## Main Contributions
+# Discussions 
+
+## Key Contributions
 
 **1. Multiplicative Decomposition Framework**
 
-- Introduction of **$y = y^U \times y^P$ decomposition model** for solar irradiance time series
-- **Fundamental resolution** of the spurious correlation problem caused by periodicity
+- Introduced **$y = y^U \times y^P$ decomposition model** for solar irradiance
+- **Resolved spurious correlation problem** caused by periodicity
 
 **2. Asymmetric Component Modeling**
 
-- **Independent graph structure and hyperparameter optimization** tailored to each component's spatio-temporal characteristics
-- Amplitude: short lag (lag=4), sparse graph / Periodic: long lag (lag=24), dense graph
+- **Independent graph structures and hyperparameters** tailored to each component
+- Climate: lag=4, sparse / Periodic: lag=24, dense
 
-**3. Robustness Under Extreme Weather Conditions**
+**3. Robustness Under Extreme Weather**
 
-- Achieved **32-45% MSE reduction** during Typhoon Hinnamnor period
+- **32-45% MSE reduction** during Typhoon Hinnamnor period
 
-## Reviewer Question 1: Comparison with Alternative Decomposition Methods
+## Reviewer Question 1: Why Not Other Decomposition Methods?
 
-> *"Comparative analyses with alternative decomposition techniques such as STL, EMD, or wavelet methods would strengthen the argument that EBT provides distinct advantages."*
-
-**Comparison targets**: STL [@cleveland1990stl], EMD [@huang1998empirical], Wavelet [@mallat2002theory] vs EBT
+> *"Comparison with alternative decomposition techniques such as STL, EMD, and Wavelet?"*
 
 <div style="width: fit-content; margin: auto;">
 
-| Method | Decomposition type | Decomposition result |
+| Method | Decomposition Type | Result |
 |:---:|:---:|:---|
-| STL | Additive | Daily periodic component remains in residual |
-| EMD | Additive | Periodic component not clearly separated into specific IMF |
+| STL | Additive | Daily component remains in residual |
+| EMD | Additive | Periodic component not isolated to specific IMF |
 | Wavelet | Additive | Periodic energy dispersed across multiple levels |
-| **EBT** | **Multiplicative** | **Clear two-component decomposition** ($y^U$, $y^P$) |
+| **EBT** | **Multiplicative** | **Clean two-component separation** |
 
 </div>
 
-→ **Additive decomposition methods (STL, EMD, Wavelet) are unsuitable for the structural characteristics of solar irradiance**
+→ **Additive methods fail to cleanly separate components. Only EBT achieves clean separation**
 
-## Decomposition Method Comparison: Raw Scale {.scrollable}
-
-::: {style="overflow-y: auto; max-height: 800px;"}
-![**Figure:** Decomposition comparisons on the raw-scale irradiance series for 서울 (2022-09-01 to 2022-09-15). Top: EBT multiplicative decomposition. Middle rows: STL and EMD additive decompositions. Bottom: Wavelet (db4, level 4) additive decomposition.](figs/A1_fig1.png){width="100%"}
-:::
-
-## Decomposition Method Comparison: Log Scale {.scrollable}
+## Decomposition Comparison: Raw Scale {.scrollable}
 
 ::: {style="overflow-y: auto; max-height: 800px;"}
-![**Figure:** Decomposition comparisons on the log-transformed irradiance series for 서울 (2022-09-01 to 2022-09-15). Top: EBT multiplicative decomposition. Middle rows: STL and EMD multiplicative decompositions. Bottom: Wavelet (db4, level 4) multiplicative decomposition.](figs/A1_fig2.png){width="100%"}
+![Figure: Decomposition comparison on raw-scale. EBT (top) vs STL, EMD, Wavelet (additive methods).](figs/A1_fig1.png){width="100%"}
 :::
 
-## Reviewer Question 2: Comparison with Non-Graph Deep Learning Models
+## Decomposition Comparison: Log Scale {.scrollable}
 
-> *"Comparisons with non-graph deep learning baselines such as LSTM, CNN-LSTM, or temporal convolutional networks would help clarify the specific advantages of the proposed approach."*
+::: {style="overflow-y: auto; max-height: 800px;"}
+![Figure: Decomposition comparison on log-scale. Multiplicative framing via log-transform still fails for STL, EMD, Wavelet.](figs/A1_fig2.png){width="100%"}
+:::
 
-**Comparison models**: TCN, LSTM, CNN-LSTM [@bai2018tcn; @hochreiter1997lstm; @agga2021short] (2000 epochs, 10 repetitions)
+## Reviewer Question 2: What About Non-STGNN Deep Learning?
+
+> *"Comparison with LSTM, CNN-LSTM, TCN, etc.?"*
+
+**Baseline models**: TCN, LSTM, CNN-LSTM [@bai2018tcn; @hochreiter1997lstm; @agga2021short]
 
 <div style="width: fit-content; margin: auto;">
 
@@ -440,13 +490,15 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 </div>
 
-→ **33% MSE reduction** compared to the best non-spatial model (TCN) — **Demonstrates the effectiveness of spatial dependency modeling**
+→ **STGNN leveraging spatial information significantly outperforms temporal-only models** (33% improvement over TCN)
 
 ## Thank You
 
-**Paper information**
+**Paper Information**
 
 **"Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction"**
+
+**Author**: Guebin Choi
 
 *CMES-Computer Modeling in Engineering & Sciences*, 2025
 
