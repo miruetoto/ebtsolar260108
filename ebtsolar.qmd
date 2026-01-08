@@ -269,20 +269,12 @@ $$\cos(58\pi t) + \cos(62\pi t) = 2\cos(60\pi t) \cdot \cos(2\pi t)$$
 
 $$y_{v,t} = y_{v,t}^U \times y_{v,t}^P$$
 
-<div style="width: fit-content; margin: auto;">
+- $y_{v,t}^U$: **Climate component** — reflects weather conditions (upper envelope)
+- $y_{v,t}^P$: **Periodic component** — sunrise/sunset pattern (normalized daily cycle, $\in [0,1]$)
 
-| Component | Meaning | Characteristics |
-|:---:|:---|:---|
-| $y_{v,t}^U$ | **Climate component** — reflects weather conditions | Upper envelope |
-| $y_{v,t}^P$ | **Periodic component** — sunrise/sunset pattern | Normalized daily cycle ($\in [0,1]$) |
+## EBT Decomposition Process
 
-</div>
-
-## EBT Decomposition Process {.scrollable}
-
-::: {style="overflow-y: auto; max-height: 800px;"}
 ![Figure: EBT decomposition process. Left: Elastic bands with τ=24 and upper envelope extraction. Right: Amplitude modulation $y^U$ (top) and periodic component $y^P$ (bottom).](figs/sec32_fig1.png){width="100%"}
-:::
 
 **Solved via EBT(Elastic-Band Transform)** [@choi2023elastic; @choi2024decomposition]
 
@@ -290,22 +282,18 @@ $$y_{v,t} = y_{v,t}^U \times y_{v,t}^P$$
 - **Top right**: Climate component $y_{v,t}^U$ — maximum achievable irradiance given weather
 - **Bottom right**: Periodic component $y_{v,t}^P$ — normalized sunrise/sunset pattern
 
-## Correlation Structure After Decomposition {.scrollable}
+## Correlation Structure After Decomposition
 
-::: {style="overflow-y: auto; max-height: 800px;"}
 ![Figure: Correlation structure comparison after decomposition. $y^P$: Dense (nationwide similarity). $y^U$: Sparse (climatologically similar regions only).](figs/corr_grid_plot_v3.png){width="100%"}
-:::
 
 **Decomposition works well!**
 
 - **Periodic component** $y^P$: Correlation matrix becomes **denser** — nearly identical nationwide ($r \approx 1$)
 - **Climate component** $y^U$: Correlation matrix becomes **sparser** — high correlation only among climatically similar regions
 
-## Overall Framework {.scrollable}
+## Overall Framework
 
-::: {style="overflow-y: auto; max-height: 800px;"}
 ![Figure: Overall framework. Decompose with EBT, apply STGNN to each component separately, then recombine predictions.](pipeline.png){width="100%"}
-:::
 
 **Apply STGNN to each decomposed component, then recombine**
 
@@ -315,21 +303,15 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 **1. Reasonable Graph Connectivity**
 
-<div style="width: fit-content; margin: auto;">
-
-| Component | Graph | Reason |
-|:---:|:---:|:---|
-| Periodic $y^P$ | **Dense** | Sunrise/sunset pattern similar across all regions → consider all stations |
-| Climate $y^U$ | **Sparse** | Only climatically similar regions matter → fewer connections reasonable |
-
-</div>
+- **Periodic $y^P$** → **Dense graph**: Sunrise/sunset pattern similar across all regions
+- **Climate $y^U$** → **Sparse graph**: Only climatically similar regions matter
 
 **2. Easier Prediction**
 
 - **Periodic component**: Highly regular → easy for the model to learn
 - **Climate component**: Removing periodicity simplifies the signal → easier to predict
 
-**3. Flexible and Easy Lag/Filter Selection**
+**3. Component-Specific Hyperparameter Optimization**
 
 <div style="width: fit-content; margin: auto;">
 
@@ -344,14 +326,40 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 ## STGNN Architectures Used in Experiments
 
-<div style="width: fit-content; margin: auto;">
+**Core idea**: Replace standard matrix multiplication with graph convolution
 
-| Model | Temporal | GNN Layer | Characteristics |
-|:---:|:---:|:---:|:---|
-| **GConvGRU** | GRU | Chebyshev | Spectral graph convolution |
-| **GConvLSTM** | LSTM | Chebyshev | Includes peephole connections |
-| **T-GCN** | GRU | GCN | Lightweight first-order approximation |
-| **DCRNN** | GRU | DiffConv | Bidirectional diffusion convolution |
+$$\mathbf{h}_t = \sigma\left( \mathbf{W} \cdot \text{GraphConv}(\mathbf{X}_t, \mathbf{A}) + \mathbf{U} \cdot \mathbf{h}_{t-1} \right)$$
+
+- $\mathbf{X}_t \in \mathbb{R}^{N \times F}$: input features at time $t$ ($N$: nodes, $F$: features)
+- $\mathbf{A} \in \mathbb{R}^{N \times N}$: adjacency matrix, $\mathbf{h}_t$: hidden state
+- $\mathbf{W}, \mathbf{U}$: learnable weight matrices, $\sigma$: activation function
+
+## STGNN Architectures Used in Experiment
+
+**Spectral Convolution** (GConvGRU/GConvLSTM, T-GCN):
+
+$$\mathbf{X} \star_{\mathcal{G}} \mathbf{g} = \mathbf{U} \mathbf{g}_\theta \mathbf{U}^\top \mathbf{X} \approx \sum_{k=0}^{K-1} \theta_k T_k(\tilde{\mathbf{L}}) \mathbf{X}$$
+
+- $\mathbf{L} = \mathbf{U} \mathbf{\Lambda} \mathbf{U}^\top$: eigen-decomposition of graph Laplacian
+- $T_k$: Chebyshev polynomial of order $k$, $K$: polynomial order
+
+**Diffusion Convolution** (DCRNN):
+
+$$\mathbf{X} \star_{\mathcal{G}} \mathbf{g} = \sum_{j=0}^{J-1} \left( \theta_j \mathbf{P}^j + \theta_j' (\mathbf{P}^\top)^j \right) \mathbf{X}$$
+
+- $\mathbf{P} = \mathbf{D}^{-1}\mathbf{A}$: random walk transition matrix ($\mathbf{A}$: adjacency, $\mathbf{D}$: degree)
+- $J$: diffusion steps (hops)
+
+## STGNN Architectures Used in Experiment
+
+<div style="width: 70%; margin: auto;">
+
+| Model | Temporal | GNN Layer | Order |
+|:---:|:---:|:---:|:---:|
+| **GConvGRU** | GRU | Chebyshev | $K \geq 2$ |
+| **GConvLSTM** | LSTM | Chebyshev | $K \geq 2$ |
+| **T-GCN** | GRU | GCN | $K = 1$ |
+| **DCRNN** | GRU | DiffConv | $J \geq 2$ |
 
 </div>
 
@@ -375,9 +383,11 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 </div>
 
-## Experimental Results: GConvGRU (MSE) {.scrollable}
+## Experimental Results (MSE)
 
-<div style="width: fit-content; margin: auto;">
+::: {.panel-tabset}
+
+### GConvGRU
 
 | Lag | F | Classic | Proposed (L,L) | Proposed (4,L) |
 |:---:|:---:|:---:|:---:|:---:|
@@ -394,17 +404,64 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 | 24 | 24 | 0.0675<sub>±0.0024</sub> | 0.0507<sub>±0.0026</sub> | [**0.0470**<sub>±0.0008</sub>]{style="color: red;"} |
 | 24 | 32 | 0.0677<sub>±0.0010</sub> | 0.0503<sub>±0.0013</sub> | [**0.0472**<sub>±0.0007</sub>]{style="color: red;"} |
 
-</div>
+### GConvLSTM
 
-→ **Applying STGNN after EBT decomposition yields better performance overall** (approximately 20-30% MSE reduction)
+| Lag | F | Classic | Proposed (L,L) | Proposed (4,L) |
+|:---:|:---:|:---:|:---:|:---:|
+| 8 | 8 | 0.0518<sub>±0.0006</sub> | 0.0601<sub>±0.0551</sub> | [**0.0416**<sub>±0.0006</sub>]{style="color: red;"} |
+| 8 | 16 | 0.0518<sub>±0.0007</sub> | 0.0418<sub>±0.0005</sub> | [**0.0408**<sub>±0.0006</sub>]{style="color: red;"} |
+| 8 | 24 | 0.0519<sub>±0.0004</sub> | 0.0416<sub>±0.0007</sub> | [**0.0405**<sub>±0.0005</sub>]{style="color: red;"} |
+| 8 | 32 | 0.0525<sub>±0.0004</sub> | 0.0419<sub>±0.0010</sub> | [**0.0402**<sub>±0.0004</sub>]{style="color: red;"} |
+| 12 | 8 | 0.0524<sub>±0.0007</sub> | 0.0437<sub>±0.0010</sub> | [**0.0419**<sub>±0.0006</sub>]{style="color: red;"} |
+| 12 | 16 | 0.0530<sub>±0.0008</sub> | 0.0433<sub>±0.0013</sub> | [**0.0419**<sub>±0.0004</sub>]{style="color: red;"} |
+| 12 | 24 | 0.0534<sub>±0.0005</sub> | 0.0427<sub>±0.0010</sub> | [**0.0418**<sub>±0.0006</sub>]{style="color: red;"} |
+| 12 | 32 | 0.0534<sub>±0.0005</sub> | 0.0425<sub>±0.0009</sub> | [**0.0419**<sub>±0.0005</sub>]{style="color: red;"} |
+| 24 | 8 | 0.0618<sub>±0.0019</sub> | 0.0487<sub>±0.0027</sub> | [**0.0460**<sub>±0.0009</sub>]{style="color: red;"} |
+| 24 | 16 | 0.0626<sub>±0.0013</sub> | 0.0498<sub>±0.0028</sub> | [**0.0461**<sub>±0.0007</sub>]{style="color: red;"} |
+| 24 | 24 | 0.0641<sub>±0.0016</sub> | 0.0468<sub>±0.0017</sub> | [**0.0466**<sub>±0.0007</sub>]{style="color: red;"} |
+| 24 | 32 | 0.0644<sub>±0.0013</sub> | 0.0486<sub>±0.0030</sub> | [**0.0463**<sub>±0.0008</sub>]{style="color: red;"} |
 
-## Typhoon Hinnamnor Period {.scrollable}
+### T-GCN
 
-::: {style="overflow-y: auto; max-height: 800px;"}
-![Figure: Typhoon Hinnamnor period analysis. Top 9 regions with highest MSE reduction along the typhoon path.](figs/251121_top9_typhoon_map_timeseries_geojson.png){width="100%"}
+| Lag | F | Classic | Proposed (L,L) | Proposed (4,L) |
+|:---:|:---:|:---:|:---:|:---:|
+| 8 | 8 | 0.1297<sub>±0.0011</sub> | [**0.1214**<sub>±0.0034</sub>]{style="color: red;"} | 0.1343<sub>±0.0371</sub> |
+| 8 | 16 | 0.1295<sub>±0.0007</sub> | [**0.1245**<sub>±0.0074</sub>]{style="color: red;"} | 0.1273<sub>±0.0084</sub> |
+| 8 | 24 | 0.1307<sub>±0.0008</sub> | [**0.1244**<sub>±0.0032</sub>]{style="color: red;"} | 0.1265<sub>±0.0068</sub> |
+| 8 | 32 | 0.1314<sub>±0.0007</sub> | [**0.1250**<sub>±0.0061</sub>]{style="color: red;"} | 0.1300<sub>±0.0087</sub> |
+| 12 | 8 | 0.1312<sub>±0.0010</sub> | [**0.1215**<sub>±0.0022</sub>]{style="color: red;"} | 0.1221<sub>±0.0037</sub> |
+| 12 | 16 | 0.1319<sub>±0.0008</sub> | [**0.1217**<sub>±0.0016</sub>]{style="color: red;"} | 0.1252<sub>±0.0065</sub> |
+| 12 | 24 | 0.1322<sub>±0.0006</sub> | [**0.1252**<sub>±0.0018</sub>]{style="color: red;"} | 0.1262<sub>±0.0059</sub> |
+| 12 | 32 | 0.1328<sub>±0.0007</sub> | [**0.1256**<sub>±0.0026</sub>]{style="color: red;"} | 0.1261<sub>±0.0030</sub> |
+| 24 | 8 | 0.1366<sub>±0.0016</sub> | 0.1506<sub>±0.0125</sub> | [**0.1308**<sub>±0.0037</sub>]{style="color: red;"} |
+| 24 | 16 | 0.1388<sub>±0.0026</sub> | 0.1749<sub>±0.0193</sub> | [**0.1340**<sub>±0.0052</sub>]{style="color: red;"} |
+| 24 | 24 | 0.1391<sub>±0.0013</sub> | 0.1732<sub>±0.0241</sub> | [**0.1379**<sub>±0.0040</sub>]{style="color: red;"} |
+| 24 | 32 | 0.1402<sub>±0.0022</sub> | 0.1710<sub>±0.0182</sub> | [**0.1391**<sub>±0.0044</sub>]{style="color: red;"} |
+
+### DCRNN
+
+| Lag | F | Classic | Proposed (L,L) | Proposed (4,L) |
+|:---:|:---:|:---:|:---:|:---:|
+| 8 | 8 | 0.0577<sub>±0.0010</sub> | 0.0829<sub>±0.0484</sub> | [**0.0557**<sub>±0.0042</sub>]{style="color: red;"} |
+| 8 | 16 | 0.0594<sub>±0.0015</sub> | 0.0667<sub>±0.0080</sub> | [**0.0540**<sub>±0.0020</sub>]{style="color: red;"} |
+| 8 | 24 | 0.0603<sub>±0.0011</sub> | 0.0667<sub>±0.0097</sub> | [**0.0526**<sub>±0.0022</sub>]{style="color: red;"} |
+| 8 | 32 | 0.0595<sub>±0.0007</sub> | 0.0655<sub>±0.0047</sub> | [**0.0529**<sub>±0.0014</sub>]{style="color: red;"} |
+| 12 | 8 | 0.0583<sub>±0.0011</sub> | 0.1085<sub>±0.0604</sub> | [**0.0536**<sub>±0.0022</sub>]{style="color: red;"} |
+| 12 | 16 | 0.0589<sub>±0.0007</sub> | 0.1267<sub>±0.0648</sub> | [**0.0535**<sub>±0.0010</sub>]{style="color: red;"} |
+| 12 | 24 | 0.0606<sub>±0.0010</sub> | 0.0978<sub>±0.0435</sub> | [**0.0549**<sub>±0.0047</sub>]{style="color: red;"} |
+| 12 | 32 | 0.0610<sub>±0.0011</sub> | 0.0971<sub>±0.0438</sub> | [**0.0551**<sub>±0.0034</sub>]{style="color: red;"} |
+| 24 | 8 | 0.0815<sub>±0.0077</sub> | 0.1324<sub>±0.0262</sub> | [**0.0631**<sub>±0.0047</sub>]{style="color: red;"} |
+| 24 | 16 | 0.0872<sub>±0.0055</sub> | 0.1403<sub>±0.0331</sub> | [**0.0669**<sub>±0.0048</sub>]{style="color: red;"} |
+| 24 | 24 | 0.0847<sub>±0.0041</sub> | 0.1366<sub>±0.0346</sub> | [**0.0658**<sub>±0.0034</sub>]{style="color: red;"} |
+| 24 | 32 | 0.0885<sub>±0.0032</sub> | 0.1357<sub>±0.0258</sub> | [**0.0656**<sub>±0.0052</sub>]{style="color: red;"} |
+
 :::
 
-**This improvement is especially pronounced during the Hinnamnor period**
+## Typhoon Hinnamnor Period
+
+**Typhoon Hinnamnor** (2022): Super typhoon that struck Korea on Sep 5-6, 2022. One of the strongest typhoons to affect Korea, causing significant damage to the southeastern region. ([Digital Typhoon](http://agora.ex.nii.ac.jp/digital-typhoon/summary/wnp/s/202211.html.en))
+
+![Figure: Typhoon Hinnamnor period analysis. Top 9 regions with highest MSE reduction along the typhoon path.](figs/251121_top9_typhoon_map_timeseries_geojson.png){width="100%"}
 
 ## Regional Performance Improvement During Typhoon Period
 
@@ -412,9 +469,9 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 | # | Region | Classic | Proposed | MSE Reduction |
 |:---:|:---|:---:|:---:|:---:|
-| 1 | 경주 | 0.0791 | 0.0436 | [**44.9%**]{style="color: red;"} |
-| 2 | 함양 | 0.0596 | 0.0343 | [**42.5%**]{style="color: red;"} |
-| 3 | 창원 | 0.0644 | 0.0375 | [**41.8%**]{style="color: red;"} |
+| 1 | 경주 | 0.0791 | 0.0436 | **44.9%** |
+| 2 | 함양 | 0.0596 | 0.0343 | **42.5%** |
+| 3 | 창원 | 0.0644 | 0.0375 | **41.8%** |
 | 4 | 의령 | 0.0561 | 0.0353 | **37.1%** |
 | 5 | 부산 | 0.0753 | 0.0493 | **34.5%** |
 | 6 | 고산 | 0.0388 | 0.0257 | **33.8%** |
@@ -444,11 +501,16 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 - **32-45% MSE reduction** during Typhoon Hinnamnor period
 
+## Future Work
+
+- **External data integration**: satellite cloud imagery, numerical weather prediction, atmospheric reanalysis
+- **Hybrid modeling**: replace $y^P$ with astronomical calculations, focus learning capacity on $y^U$
+
 ## Reviewer Question 1: Why Not Other Decomposition Methods?
 
 > *"Comparison with alternative decomposition techniques such as STL, EMD, and Wavelet?"*
 
-<div style="width: fit-content; margin: auto;">
+<div style="width: 70%; margin: auto;">
 
 | Method | Decomposition Type | Result |
 |:---:|:---:|:---|
@@ -461,17 +523,13 @@ $$\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P$$
 
 → **Additive methods fail to cleanly separate components. Only EBT achieves clean separation**
 
-## Decomposition Comparison: Raw Scale {.scrollable}
+## Decomposition Comparison: Additive
 
-::: {style="overflow-y: auto; max-height: 800px;"}
-![Figure: Decomposition comparison on raw-scale. EBT (top) vs STL, EMD, Wavelet (additive methods).](figs/A1_fig1.png){width="100%"}
-:::
+![Figure: Additive decomposition comparison. EBT (top) vs STL, EMD, Wavelet.](figs/A1_fig1.png){width="100%"}
 
-## Decomposition Comparison: Log Scale {.scrollable}
+## Decomposition Comparison: Multiplicative
 
-::: {style="overflow-y: auto; max-height: 800px;"}
-![Figure: Decomposition comparison on log-scale. Multiplicative framing via log-transform still fails for STL, EMD, Wavelet.](figs/A1_fig2.png){width="100%"}
-:::
+![Figure: Multiplicative decomposition comparison via log-transform. STL, EMD, Wavelet still fail to cleanly separate components.](figs/A1_fig2.png){width="100%"}
 
 ## Reviewer Question 2: What About Non-STGNN Deep Learning?
 

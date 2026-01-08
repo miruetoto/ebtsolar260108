@@ -492,118 +492,49 @@
 </ul>
 <p><strong>Decompose solar irradiance multiplicatively</strong></p>
 <p><span class="math display">\[y_{v,t} = y_{v,t}^U \times y_{v,t}^P\]</span></p>
-<div style="width: fit-content; margin: auto;">
-<table class="caption-top">
-<colgroup>
-<col style="width: 38%">
-<col style="width: 30%">
-<col style="width: 30%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">Component</th>
-<th style="text-align: left;">Meaning</th>
-<th style="text-align: left;">Characteristics</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><span class="math inline">\(y_{v,t}^U\)</span></td>
-<td style="text-align: left;"><strong>Climate component</strong> — reflects weather conditions</td>
-<td style="text-align: left;">Upper envelope</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="math inline">\(y_{v,t}^P\)</span></td>
-<td style="text-align: left;"><strong>Periodic component</strong> — sunrise/sunset pattern</td>
-<td style="text-align: left;">Normalized daily cycle (<span class="math inline">\(\in [0,1]\)</span>)</td>
-</tr>
-</tbody>
-</table>
-</div>
+<ul>
+<li><span class="math inline">\(y_{v,t}^U\)</span>: <strong>Climate component</strong> — reflects weather conditions (upper envelope)</li>
+<li><span class="math inline">\(y_{v,t}^P\)</span>: <strong>Periodic component</strong> — sunrise/sunset pattern (normalized daily cycle, <span class="math inline">\(\in [0,1]\)</span>)</li>
+</ul>
 </section>
-<section id="ebt-decomposition-process" class="slide level2 scrollable">
+<section id="ebt-decomposition-process" class="slide level2">
 <h2>EBT Decomposition Process</h2>
-<div style="overflow-y: auto; max-height: 800px;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/sec32_fig1.png" style="width:100.0%"></p>
-<figcaption>Figure: EBT decomposition process. Left: Elastic bands with τ=24 and upper envelope extraction. Right: Amplitude modulation <span class="math inline">\(y^U\)</span> (top) and periodic component <span class="math inline">\(y^P\)</span> (bottom).</figcaption>
-</figure>
-</div>
-</div>
-<p><strong>Solved via EBT(Elastic-Band Transform)</strong> <span class="citation" data-cites="choi2023elastic choi2024decomposition">(<a href="#/references" role="doc-biblioref" onclick="">Choi &amp; Oh, 2023</a>, <a href="#/references" role="doc-biblioref" onclick="">2024</a>)</span></p>
+
+<img data-src="figs/sec32_fig1.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: EBT decomposition process. Left: Elastic bands with τ=24 and upper envelope extraction. Right: Amplitude modulation <span class="math inline">\(y^U\)</span> (top) and periodic component <span class="math inline">\(y^P\)</span> (bottom).</p><p><strong>Solved via EBT(Elastic-Band Transform)</strong> <span class="citation" data-cites="choi2023elastic choi2024decomposition">(<a href="#/references" role="doc-biblioref" onclick="">Choi &amp; Oh, 2023</a>, <a href="#/references" role="doc-biblioref" onclick="">2024</a>)</span></p>
 <ul>
 <li><strong>Left</strong>: Construct elastic bands with <span class="math inline">\(\tau=24\)</span> hourly intervals → extract upper envelope</li>
 <li><strong>Top right</strong>: Climate component <span class="math inline">\(y_{v,t}^U\)</span> — maximum achievable irradiance given weather</li>
 <li><strong>Bottom right</strong>: Periodic component <span class="math inline">\(y_{v,t}^P\)</span> — normalized sunrise/sunset pattern</li>
 </ul>
 </section>
-<section id="correlation-structure-after-decomposition" class="slide level2 scrollable">
+<section id="correlation-structure-after-decomposition" class="slide level2">
 <h2>Correlation Structure After Decomposition</h2>
-<div style="overflow-y: auto; max-height: 800px;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/corr_grid_plot_v3.png" style="width:100.0%"></p>
-<figcaption>Figure: Correlation structure comparison after decomposition. <span class="math inline">\(y^P\)</span>: Dense (nationwide similarity). <span class="math inline">\(y^U\)</span>: Sparse (climatologically similar regions only).</figcaption>
-</figure>
-</div>
-</div>
-<p><strong>Decomposition works well!</strong></p>
+
+<img data-src="figs/corr_grid_plot_v3.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Correlation structure comparison after decomposition. <span class="math inline">\(y^P\)</span>: Dense (nationwide similarity). <span class="math inline">\(y^U\)</span>: Sparse (climatologically similar regions only).</p><p><strong>Decomposition works well!</strong></p>
 <ul>
 <li><strong>Periodic component</strong> <span class="math inline">\(y^P\)</span>: Correlation matrix becomes <strong>denser</strong> — nearly identical nationwide (<span class="math inline">\(r \approx 1\)</span>)</li>
 <li><strong>Climate component</strong> <span class="math inline">\(y^U\)</span>: Correlation matrix becomes <strong>sparser</strong> — high correlation only among climatically similar regions</li>
 </ul>
 </section>
-<section id="overall-framework" class="slide level2 scrollable">
+<section id="overall-framework" class="slide level2">
 <h2>Overall Framework</h2>
-<div style="overflow-y: auto; max-height: 800px;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="pipeline.png" style="width:100.0%"></p>
-<figcaption>Figure: Overall framework. Decompose with EBT, apply STGNN to each component separately, then recombine predictions.</figcaption>
-</figure>
-</div>
-</div>
-<p><strong>Apply STGNN to each decomposed component, then recombine</strong></p>
+
+<img data-src="pipeline.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Overall framework. Decompose with EBT, apply STGNN to each component separately, then recombine predictions.</p><p><strong>Apply STGNN to each decomposed component, then recombine</strong></p>
 <p><span class="math display">\[\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P\]</span></p>
 </section>
 <section id="advantages-of-the-proposed-method" class="slide level2">
 <h2>Advantages of the Proposed Method</h2>
 <p><strong>1. Reasonable Graph Connectivity</strong></p>
-<div style="width: fit-content; margin: auto;">
-<table class="caption-top">
-<colgroup>
-<col style="width: 35%">
-<col style="width: 35%">
-<col style="width: 28%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">Component</th>
-<th style="text-align: center;">Graph</th>
-<th style="text-align: left;">Reason</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Periodic <span class="math inline">\(y^P\)</span></td>
-<td style="text-align: center;"><strong>Dense</strong></td>
-<td style="text-align: left;">Sunrise/sunset pattern similar across all regions → consider all stations</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Climate <span class="math inline">\(y^U\)</span></td>
-<td style="text-align: center;"><strong>Sparse</strong></td>
-<td style="text-align: left;">Only climatically similar regions matter → fewer connections reasonable</td>
-</tr>
-</tbody>
-</table>
-</div>
+<ul>
+<li><strong>Periodic <span class="math inline">\(y^P\)</span></strong> → <strong>Dense graph</strong>: Sunrise/sunset pattern similar across all regions</li>
+<li><strong>Climate <span class="math inline">\(y^U\)</span></strong> → <strong>Sparse graph</strong>: Only climatically similar regions matter</li>
+</ul>
 <p><strong>2. Easier Prediction</strong></p>
 <ul>
 <li><strong>Periodic component</strong>: Highly regular → easy for the model to learn</li>
 <li><strong>Climate component</strong>: Removing periodicity simplifies the signal → easier to predict</li>
 </ul>
-<p><strong>3. Flexible and Easy Lag/Filter Selection</strong></p>
+<p><strong>3. Component-Specific Hyperparameter Optimization</strong></p>
 <div style="width: fit-content; margin: auto;">
 <table class="caption-top">
 <colgroup>
@@ -640,14 +571,39 @@
 </section>
 <section id="stgnn-architectures-used-in-experiments" class="slide level2">
 <h2>STGNN Architectures Used in Experiments</h2>
-<div style="width: fit-content; margin: auto;">
+<p><strong>Core idea</strong>: Replace standard matrix multiplication with graph convolution</p>
+<p><span class="math display">\[\mathbf{h}_t = \sigma\left( \mathbf{W} \cdot \text{GraphConv}(\mathbf{X}_t, \mathbf{A}) + \mathbf{U} \cdot \mathbf{h}_{t-1} \right)\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathbf{X}_t \in \mathbb{R}^{N \times F}\)</span>: input features at time <span class="math inline">\(t\)</span> (<span class="math inline">\(N\)</span>: nodes, <span class="math inline">\(F\)</span>: features)</li>
+<li><span class="math inline">\(\mathbf{A} \in \mathbb{R}^{N \times N}\)</span>: adjacency matrix, <span class="math inline">\(\mathbf{h}_t\)</span>: hidden state</li>
+<li><span class="math inline">\(\mathbf{W}, \mathbf{U}\)</span>: learnable weight matrices, <span class="math inline">\(\sigma\)</span>: activation function</li>
+</ul>
+</section>
+<section id="stgnn-architectures-used-in-experiment" class="slide level2">
+<h2>STGNN Architectures Used in Experiment</h2>
+<p><strong>Spectral Convolution</strong> (GConvGRU/GConvLSTM, T-GCN):</p>
+<p><span class="math display">\[\mathbf{X} \star_{\mathcal{G}} \mathbf{g} = \mathbf{U} \mathbf{g}_\theta \mathbf{U}^\top \mathbf{X} \approx \sum_{k=0}^{K-1} \theta_k T_k(\tilde{\mathbf{L}}) \mathbf{X}\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathbf{L} = \mathbf{U} \mathbf{\Lambda} \mathbf{U}^\top\)</span>: eigen-decomposition of graph Laplacian</li>
+<li><span class="math inline">\(T_k\)</span>: Chebyshev polynomial of order <span class="math inline">\(k\)</span>, <span class="math inline">\(K\)</span>: polynomial order</li>
+</ul>
+<p><strong>Diffusion Convolution</strong> (DCRNN):</p>
+<p><span class="math display">\[\mathbf{X} \star_{\mathcal{G}} \mathbf{g} = \sum_{j=0}^{J-1} \left( \theta_j \mathbf{P}^j + \theta_j' (\mathbf{P}^\top)^j \right) \mathbf{X}\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathbf{P} = \mathbf{D}^{-1}\mathbf{A}\)</span>: random walk transition matrix (<span class="math inline">\(\mathbf{A}\)</span>: adjacency, <span class="math inline">\(\mathbf{D}\)</span>: degree)</li>
+<li><span class="math inline">\(J\)</span>: diffusion steps (hops)</li>
+</ul>
+</section>
+<section id="stgnn-architectures-used-in-experiment-1" class="slide level2">
+<h2>STGNN Architectures Used in Experiment</h2>
+<div style="width: 70%; margin: auto;">
 <table class="caption-top">
 <thead>
 <tr class="header">
 <th style="text-align: center;">Model</th>
 <th style="text-align: center;">Temporal</th>
 <th style="text-align: center;">GNN Layer</th>
-<th style="text-align: left;">Characteristics</th>
+<th style="text-align: center;">Order</th>
 </tr>
 </thead>
 <tbody>
@@ -655,25 +611,25 @@
 <td style="text-align: center;"><strong>GConvGRU</strong></td>
 <td style="text-align: center;">GRU</td>
 <td style="text-align: center;">Chebyshev</td>
-<td style="text-align: left;">Spectral graph convolution</td>
+<td style="text-align: center;"><span class="math inline">\(K \geq 2\)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>GConvLSTM</strong></td>
 <td style="text-align: center;">LSTM</td>
 <td style="text-align: center;">Chebyshev</td>
-<td style="text-align: left;">Includes peephole connections</td>
+<td style="text-align: center;"><span class="math inline">\(K \geq 2\)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><strong>T-GCN</strong></td>
 <td style="text-align: center;">GRU</td>
 <td style="text-align: center;">GCN</td>
-<td style="text-align: left;">Lightweight first-order approximation</td>
+<td style="text-align: center;"><span class="math inline">\(K = 1\)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>DCRNN</strong></td>
 <td style="text-align: center;">GRU</td>
 <td style="text-align: center;">DiffConv</td>
-<td style="text-align: left;">Bidirectional diffusion convolution</td>
+<td style="text-align: center;"><span class="math inline">\(J \geq 2\)</span></td>
 </tr>
 </tbody>
 </table>
@@ -717,9 +673,12 @@
 </table>
 </div>
 </section>
-<section id="experimental-results-gconvgru-mse" class="slide level2 scrollable">
-<h2>Experimental Results: GConvGRU (MSE)</h2>
-<div style="width: fit-content; margin: auto;">
+<section id="experimental-results-mse" class="slide level2">
+<h2>Experimental Results (MSE)</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">GConvGRU</a></li><li><a href="#tabset-1-2">GConvLSTM</a></li><li><a href="#tabset-1-3">T-GCN</a></li><li><a href="#tabset-1-4">DCRNN</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
 <table class="caption-top">
 <colgroup>
 <col style="width: 20%">
@@ -825,20 +784,332 @@
 </tbody>
 </table>
 </div>
-<p>→ <strong>Applying STGNN after EBT decomposition yields better performance overall</strong> (approximately 20-30% MSE reduction)</p>
+<div id="tabset-1-2">
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Lag</th>
+<th style="text-align: center;">F</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed (L,L)</th>
+<th style="text-align: center;">Proposed (4,L)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0518<sub>±0.0006</sub></td>
+<td style="text-align: center;">0.0601<sub>±0.0551</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0416</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0518<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.0418<sub>±0.0005</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0408</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0519<sub>±0.0004</sub></td>
+<td style="text-align: center;">0.0416<sub>±0.0007</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0405</strong><sub>±0.0005</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0525<sub>±0.0004</sub></td>
+<td style="text-align: center;">0.0419<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0402</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0524<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.0437<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0419</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0530<sub>±0.0008</sub></td>
+<td style="text-align: center;">0.0433<sub>±0.0013</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0419</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0534<sub>±0.0005</sub></td>
+<td style="text-align: center;">0.0427<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0418</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0534<sub>±0.0005</sub></td>
+<td style="text-align: center;">0.0425<sub>±0.0009</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0419</strong><sub>±0.0005</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0618<sub>±0.0019</sub></td>
+<td style="text-align: center;">0.0487<sub>±0.0027</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0460</strong><sub>±0.0009</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0626<sub>±0.0013</sub></td>
+<td style="text-align: center;">0.0498<sub>±0.0028</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0461</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0641<sub>±0.0016</sub></td>
+<td style="text-align: center;">0.0468<sub>±0.0017</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0466</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0644<sub>±0.0013</sub></td>
+<td style="text-align: center;">0.0486<sub>±0.0030</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0463</strong><sub>±0.0008</sub></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-3">
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Lag</th>
+<th style="text-align: center;">F</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed (L,L)</th>
+<th style="text-align: center;">Proposed (4,L)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.1297<sub>±0.0011</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1214</strong><sub>±0.0034</sub></span></td>
+<td style="text-align: center;">0.1343<sub>±0.0371</sub></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.1295<sub>±0.0007</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1245</strong><sub>±0.0074</sub></span></td>
+<td style="text-align: center;">0.1273<sub>±0.0084</sub></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.1307<sub>±0.0008</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1244</strong><sub>±0.0032</sub></span></td>
+<td style="text-align: center;">0.1265<sub>±0.0068</sub></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.1314<sub>±0.0007</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1250</strong><sub>±0.0061</sub></span></td>
+<td style="text-align: center;">0.1300<sub>±0.0087</sub></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.1312<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1215</strong><sub>±0.0022</sub></span></td>
+<td style="text-align: center;">0.1221<sub>±0.0037</sub></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.1319<sub>±0.0008</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1217</strong><sub>±0.0016</sub></span></td>
+<td style="text-align: center;">0.1252<sub>±0.0065</sub></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.1322<sub>±0.0006</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1252</strong><sub>±0.0018</sub></span></td>
+<td style="text-align: center;">0.1262<sub>±0.0059</sub></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.1328<sub>±0.0007</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1256</strong><sub>±0.0026</sub></span></td>
+<td style="text-align: center;">0.1261<sub>±0.0030</sub></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.1366<sub>±0.0016</sub></td>
+<td style="text-align: center;">0.1506<sub>±0.0125</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1308</strong><sub>±0.0037</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.1388<sub>±0.0026</sub></td>
+<td style="text-align: center;">0.1749<sub>±0.0193</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1340</strong><sub>±0.0052</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.1391<sub>±0.0013</sub></td>
+<td style="text-align: center;">0.1732<sub>±0.0241</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1379</strong><sub>±0.0040</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.1402<sub>±0.0022</sub></td>
+<td style="text-align: center;">0.1710<sub>±0.0182</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1391</strong><sub>±0.0044</sub></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-4">
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Lag</th>
+<th style="text-align: center;">F</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed (L,L)</th>
+<th style="text-align: center;">Proposed (4,L)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0577<sub>±0.0010</sub></td>
+<td style="text-align: center;">0.0829<sub>±0.0484</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0557</strong><sub>±0.0042</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0594<sub>±0.0015</sub></td>
+<td style="text-align: center;">0.0667<sub>±0.0080</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0540</strong><sub>±0.0020</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0603<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.0667<sub>±0.0097</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0526</strong><sub>±0.0022</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0595<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.0655<sub>±0.0047</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0529</strong><sub>±0.0014</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0583<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.1085<sub>±0.0604</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0536</strong><sub>±0.0022</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0589<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.1267<sub>±0.0648</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0535</strong><sub>±0.0010</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0606<sub>±0.0010</sub></td>
+<td style="text-align: center;">0.0978<sub>±0.0435</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0549</strong><sub>±0.0047</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0610<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.0971<sub>±0.0438</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0551</strong><sub>±0.0034</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0815<sub>±0.0077</sub></td>
+<td style="text-align: center;">0.1324<sub>±0.0262</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0631</strong><sub>±0.0047</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0872<sub>±0.0055</sub></td>
+<td style="text-align: center;">0.1403<sub>±0.0331</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0669</strong><sub>±0.0048</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0847<sub>±0.0041</sub></td>
+<td style="text-align: center;">0.1366<sub>±0.0346</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0658</strong><sub>±0.0034</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0885<sub>±0.0032</sub></td>
+<td style="text-align: center;">0.1357<sub>±0.0258</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0656</strong><sub>±0.0052</sub></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
-<section id="typhoon-hinnamnor-period" class="slide level2 scrollable">
+<section id="typhoon-hinnamnor-period" class="slide level2">
 <h2>Typhoon Hinnamnor Period</h2>
-<div style="overflow-y: auto; max-height: 800px;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/251121_top9_typhoon_map_timeseries_geojson.png" style="width:100.0%"></p>
-<figcaption>Figure: Typhoon Hinnamnor period analysis. Top 9 regions with highest MSE reduction along the typhoon path.</figcaption>
-</figure>
-</div>
-</div>
-<p><strong>This improvement is especially pronounced during the Hinnamnor period</strong></p>
-</section>
+<p><strong>Typhoon Hinnamnor</strong> (2022): Super typhoon that struck Korea on Sep 5-6, 2022. One of the strongest typhoons to affect Korea, causing significant damage to the southeastern region. (<a href="http://agora.ex.nii.ac.jp/digital-typhoon/summary/wnp/s/202211.html.en">Digital Typhoon</a>)</p>
+
+<img data-src="figs/251121_top9_typhoon_map_timeseries_geojson.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Typhoon Hinnamnor period analysis. Top 9 regions with highest MSE reduction along the typhoon path.</p></section>
 <section id="regional-performance-improvement-during-typhoon-period" class="slide level2">
 <h2>Regional Performance Improvement During Typhoon Period</h2>
 <div style="width: fit-content; margin: auto;">
@@ -858,21 +1129,21 @@
 <td style="text-align: left;">경주</td>
 <td style="text-align: center;">0.0791</td>
 <td style="text-align: center;">0.0436</td>
-<td style="text-align: center;"><span style="color: red;"><strong>44.9%</strong></span></td>
+<td style="text-align: center;"><strong>44.9%</strong></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">2</td>
 <td style="text-align: left;">함양</td>
 <td style="text-align: center;">0.0596</td>
 <td style="text-align: center;">0.0343</td>
-<td style="text-align: center;"><span style="color: red;"><strong>42.5%</strong></span></td>
+<td style="text-align: center;"><strong>42.5%</strong></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">3</td>
 <td style="text-align: left;">창원</td>
 <td style="text-align: center;">0.0644</td>
 <td style="text-align: center;">0.0375</td>
-<td style="text-align: center;"><span style="color: red;"><strong>41.8%</strong></span></td>
+<td style="text-align: center;"><strong>41.8%</strong></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">4</td>
@@ -943,12 +1214,19 @@
 <li><strong>32-45% MSE reduction</strong> during Typhoon Hinnamnor period</li>
 </ul>
 </section>
+<section id="future-work" class="slide level2">
+<h2>Future Work</h2>
+<ul>
+<li><strong>External data integration</strong>: satellite cloud imagery, numerical weather prediction, atmospheric reanalysis</li>
+<li><strong>Hybrid modeling</strong>: replace <span class="math inline">\(y^P\)</span> with astronomical calculations, focus learning capacity on <span class="math inline">\(y^U\)</span></li>
+</ul>
+</section>
 <section id="reviewer-question-1-why-not-other-decomposition-methods" class="slide level2">
 <h2>Reviewer Question 1: Why Not Other Decomposition Methods?</h2>
 <blockquote>
 <p><em>“Comparison with alternative decomposition techniques such as STL, EMD, and Wavelet?”</em></p>
 </blockquote>
-<div style="width: fit-content; margin: auto;">
+<div style="width: 70%; margin: auto;">
 <table class="caption-top">
 <colgroup>
 <col style="width: 35%">
@@ -988,28 +1266,14 @@
 </div>
 <p>→ <strong>Additive methods fail to cleanly separate components. Only EBT achieves clean separation</strong></p>
 </section>
-<section id="decomposition-comparison-raw-scale" class="slide level2 scrollable">
-<h2>Decomposition Comparison: Raw Scale</h2>
-<div style="overflow-y: auto; max-height: 800px;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/A1_fig1.png" style="width:100.0%"></p>
-<figcaption>Figure: Decomposition comparison on raw-scale. EBT (top) vs STL, EMD, Wavelet (additive methods).</figcaption>
-</figure>
-</div>
-</div>
-</section>
-<section id="decomposition-comparison-log-scale" class="slide level2 scrollable">
-<h2>Decomposition Comparison: Log Scale</h2>
-<div style="overflow-y: auto; max-height: 800px;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/A1_fig2.png" style="width:100.0%"></p>
-<figcaption>Figure: Decomposition comparison on log-scale. Multiplicative framing via log-transform still fails for STL, EMD, Wavelet.</figcaption>
-</figure>
-</div>
-</div>
-</section>
+<section id="decomposition-comparison-additive" class="slide level2">
+<h2>Decomposition Comparison: Additive</h2>
+
+<img data-src="figs/A1_fig1.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Additive decomposition comparison. EBT (top) vs STL, EMD, Wavelet.</p></section>
+<section id="decomposition-comparison-multiplicative" class="slide level2">
+<h2>Decomposition Comparison: Multiplicative</h2>
+
+<img data-src="figs/A1_fig2.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Multiplicative decomposition comparison via log-transform. STL, EMD, Wavelet still fail to cleanly separate components.</p></section>
 <section id="reviewer-question-2-what-about-non-stgnn-deep-learning" class="slide level2">
 <h2>Reviewer Question 2: What About Non-STGNN Deep Learning?</h2>
 <blockquote>
