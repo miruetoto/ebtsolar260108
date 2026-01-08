@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="index_files/libs/clipboard/clipboard.min.js"></script>
-<script src="index_files/libs/quarto-html/tabby.min.js"></script>
-<script src="index_files/libs/quarto-html/popper.min.js"></script>
-<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="ebtsolar_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ebtsolar_files/libs/quarto-html/tabby.min.js"></script>
+<script src="ebtsolar_files/libs/quarto-html/popper.min.js"></script>
+<script src="ebtsolar_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="ebtsolar_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ebtsolar_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="ebtsolar_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.6.42">
 
   <meta name="author" content="최규빈">
   <meta name="dcterms.date" content="2026-01-07">
-  <title>Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction</title>
+  <title>Elastic-Band Transform–Integrated Spatio-Temporal Graph Neural Networks for Solar Radiation Forecasting</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="index_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="index_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="ebtsolar_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="ebtsolar_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -29,12 +29,32 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-  </style>
-  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-0e74698bac9d62737e0c6119ecd9d61f.css">
-  <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="index_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="ebtsolar_files/libs/revealjs/dist/theme/quarto-9e77ef18d9acafda8dd8ffb736f467af.css">
+  <link href="ebtsolar_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="ebtsolar_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="ebtsolar_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="ebtsolar_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -46,6 +66,7 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
+      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -128,8 +149,8 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction</h1>
-  <p class="subtitle">다중척도 세미나</p>
+  <h1 class="title">Elastic-Band Transform–Integrated Spatio-Temporal Graph Neural Networks for Solar Radiation Forecasting</h1>
+  <p class="subtitle">다중척도워크샵2026</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -144,204 +165,1122 @@
 
   <p class="date">2026-01-07</p>
 </section>
+<section id="table-of-contents" class="slide level2 scrollable">
+<h2>Table of Contents</h2>
+<ol type="1">
+<li><strong>Introduction</strong>
+<ul>
+<li>Characteristics / Problem / Solution</li>
+<li>STGNN and Adjacency Matrix Estimation</li>
+</ul></li>
+<li><strong>Proposed Method</strong>
+<ul>
+<li>Multiplicative Decomposition (EBT)</li>
+<li>Overall Framework and Advantages</li>
+</ul></li>
+<li><strong>Experiments</strong>
+<ul>
+<li>Experimental Setup and Results</li>
+<li>Typhoon Hinnamnor Period Analysis</li>
+</ul></li>
+<li><strong>Discussions</strong>
+<ul>
+<li>Key Contributions</li>
+<li>Reviewer Questions</li>
+</ul></li>
+</ol>
+</section>
 <section>
-<section id="연구-배경" class="title-slide slide level1 center">
-<h1>연구 배경</h1>
+<section id="introduction" class="title-slide slide level1 center">
+<h1>Introduction</h1>
 
 </section>
-<section id="태양광-발전의-중요성" class="slide level2">
-<h2>태양광 발전의 중요성</h2>
-<ul>
-<li><strong>재생에너지의 핵심</strong>: 2050 탄소중립 시나리오에서 태양광은 전체 발전량의 30% 이상 예상 (IEA)</li>
-<li><strong>분산형 전원의 대표 사례</strong>: 지역 단위 전력 생산/소비 가능</li>
-<li><strong>핵심 문제</strong>: 태양복사량의 <strong>변동성</strong> → 전력망 안정성 저해</li>
-</ul>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Important</strong></p>
-</div>
-<div class="callout-content">
-<p>정확한 태양복사량 예측이 스마트 그리드 에너지 관리의 핵심</p>
-</div>
-</div>
-</div>
-</section>
-<section id="태양복사량-시계열의-특성" class="slide level2">
-<h2>태양복사량 시계열의 특성</h2>
+<section id="characteristics-of-solar-irradiance-data" class="slide level2">
+<h2>Characteristics of Solar Irradiance Data</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figs/fig1.png" style="width:100.0%"></p>
-<figcaption>서울 지역 태양복사량 시계열</figcaption>
+<figcaption>Figure: Solar irradiance time series observed in Seoul. Strong daily periodicity coexists with irregular fluctuations.</figcaption>
 </figure>
 </div>
 </div><div class="column" style="width:40%;">
-<p><strong>이중 구조의 공존</strong></p>
-<ol type="1">
-<li><strong>강한 일일 주기성</strong>: 낮에는 양(+), 밤에는 0</li>
-<li><strong>불규칙한 변동성</strong>: 구름, 강수 등 기상 조건</li>
-</ol>
-<p>→ 단순한 시계열 모델로는 한계</p>
+<p><strong>Simple data, but challenging to analyze</strong></p>
+<p><strong>1. Strong periodicity</strong></p>
+<ul>
+<li>Clear daily periodic pattern (sunrise to sunset)</li>
+</ul>
+<p><strong>2. Zero-Value Intervals at Night</strong></p>
+<ul>
+<li>Solar irradiance is structurally zero during nighttime</li>
+</ul>
 </div></div>
 </section>
-<section id="지역-간-공간적-상관성" class="slide level2">
-<h2>지역 간 공간적 상관성</h2>
+<section id="problem" class="slide level2">
+<h2>Problem</h2>
+<p><strong>Traditional time series models are not applicable</strong></p>
+<ul>
+<li>Traditional models such as AR(Auto-Regressive) and ARMA(Auto-Regressive Moving Average) require stationarity assumptions, but the data violates these due to nighttime zero intervals</li>
+</ul>
+<p><strong>Deep learning models are also difficult to apply</strong></p>
+<ul>
+<li>LSTM(Long Short-Term Memory), TCN(Temporal Convolutional Network), etc. have no assumption issues, but require excessive training time to accurately learn nighttime zeros</li>
+</ul>
+<p><strong>What if we exclude nighttime zero intervals for prediction?</strong></p>
+<ul>
+<li>Sunrise/sunset times vary by season, making uniform exclusion like “7 PM to 6 AM” impossible</li>
+<li>Excluding zero-value intervals risks also excluding low irradiance during cloudy daytime periods</li>
+</ul>
+<p><strong>What if we decompose and remove the periodic component?</strong></p>
+<ul>
+<li>Half-wave shape makes sinusoid-based decomposition difficult</li>
+<li>The periodicity is not “added” on top of the signal (additive), so STL(Seasonal-Trend decomposition using Loess), EMD(Empirical Mode Decomposition), Wavelet, etc. cannot cleanly separate it</li>
+</ul>
+</section>
+<section id="a-possible-approach-previous-work" class="slide level2 scrollable">
+<h2>A Possible Approach (Previous Work)</h2>
+<blockquote>
+<p>Rather than predicting the next time point from previous observations, it is more reasonable to <strong>first predict whether the sun will be up at the next time point</strong>, and then predict solar irradiance conditional on the sun being up.</p>
+</blockquote>
+<p><strong>Key Insight</strong></p>
+<ul>
+<li>Treat solar irradiance prediction as a <strong>two-stage problem</strong>:
+<ol type="1">
+<li>Is the sun up or not?</li>
+<li>If up, what is the irradiance level?</li>
+</ol></li>
+</ul>
+<p><strong>Prior Research</strong> <span class="citation" data-cites="lee2021short">(<a href="#/references" role="doc-biblioref" onclick="">Lee et al., 2021</a>)</span></p>
+<ul>
+<li>Introduced a <strong>latent variable</strong> <span class="math inline">\(Z_t \in \{0, 1\}\)</span> to represent sun-up status</li>
+<li>Proposed a prediction model using the <strong>EM(Expectation-Maximization) algorithm</strong> to jointly estimate the latent state and irradiance</li>
+</ul>
+</section>
+<section id="this-study-spatio-temporal-extension" class="slide level2">
+<h2>This Study: Spatio-Temporal Extension</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figs/fig2.png" style="width:100.0%"></p>
-<figcaption>다지역 태양복사량 비교</figcaption>
+<figcaption>Figure: Solar irradiance across multiple regions in Korea. Geographically closer locations exhibit higher similarity.</figcaption>
 </figure>
 </div>
 </div><div class="column" style="width:40%;">
+<p><strong>From single time series to multiple regions</strong></p>
 <ul>
-<li>지리적으로 가까운 지역은 유사한 패턴</li>
-<li>구름 이동, 대기 순환, 지형 요인의 영향</li>
-<li><strong>공간 정보 활용</strong>이 예측 정확도 향상에 기여</li>
+<li>Previous work: prediction for a <strong>single location</strong></li>
+<li>This study: <strong>simultaneous prediction for 44 stations</strong> across Korea</li>
+</ul>
+<p><strong>Data</strong></p>
+<ul>
+<li>Hourly solar irradiance from 44 weather stations</li>
+<li>Approximately 107 days of observations</li>
+</ul>
+<p><strong>Modeling as a Graph</strong></p>
+<ul>
+<li><span class="math inline">\(\mathcal{G}_t = (\mathcal{V}, \mathbf{A}, \{y_{v,t}\})\)</span></li>
+<li><span class="math inline">\(\mathcal{V}\)</span>: set of 44 stations (nodes)</li>
+<li><span class="math inline">\(\mathbf{A}\)</span>: adjacency matrix representing connectivity between stations</li>
+<li><span class="math inline">\(y_{v,t}\)</span>: solar irradiance at station <span class="math inline">\(v\)</span> and time <span class="math inline">\(t\)</span></li>
 </ul>
 </div></div>
 </section></section>
 <section>
-<section id="기존-방법의-한계" class="title-slide slide level1 center">
-<h1>기존 방법의 한계</h1>
+<section id="related-works" class="title-slide slide level1 center">
+<h1>Related Works</h1>
 
 </section>
-<section id="거리-기반-그래프-정의의-문제" class="slide level2">
-<h2>거리 기반 그래프 정의의 문제</h2>
+<section id="solar-irradiance-forecasting-single-site-models" class="slide level2">
+<h2>Solar Irradiance Forecasting: Single-Site Models</h2>
+<p><strong>Deep learning approaches for individual locations</strong></p>
+<ul>
+<li>LSTM(Long Short-Term Memory) <span class="citation" data-cites="hochreiter1997lstm">(<a href="#/references" role="doc-biblioref" onclick="">Hochreiter &amp; Schmidhuber, 1997</a>)</span>, CNN-LSTM <span class="citation" data-cites="agga2021short">(<a href="#/references" role="doc-biblioref" onclick="">Agga et al., 2021</a>)</span>, TCN(Temporal Convolutional Network) <span class="citation" data-cites="bai2018tcn">(<a href="#/references" role="doc-biblioref" onclick="">Bai et al., 2018</a>)</span></li>
+<li>Temporal Fusion Transformer <span class="citation" data-cites="lim2021temporal">(<a href="#/references" role="doc-biblioref" onclick="">Lim et al., 2021</a>)</span>: state-of-the-art in multi-horizon forecasting</li>
+</ul>
+<p><strong>Limitation</strong></p>
+<ul>
+<li>Cannot explicitly model <strong>spatial correlations</strong> across multiple measurement stations</li>
+<li>Solar irradiance is affected by cloud movement, atmospheric circulation, and topography</li>
+<li>Single-site models miss these <strong>spatial dependencies</strong></li>
+</ul>
+</section>
+<section id="why-stgnn-is-a-natural-choice" class="slide level2">
+<h2>Why STGNN is a Natural Choice</h2>
+<p><strong>STGNN(Spatio-Temporal Graph Neural Network)</strong></p>
+<ul>
+<li>Represent stations as <strong>nodes</strong>, learn <strong>spatial</strong> and <strong>temporal</strong> dynamics simultaneously</li>
+<li>Successful in traffic <span class="citation" data-cites="li2017diffusion yu2017spatio">(<a href="#/references" role="doc-biblioref" onclick="">Li et al., 2017</a>; <a href="#/references" role="doc-biblioref" onclick="">Yu et al., 2017</a>)</span>, time series <span class="citation" data-cites="wu2019graph wu2020connecting">(<a href="#/references" role="doc-biblioref" onclick="">Wu et al., 2019</a>, <a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span>, network dynamics <span class="citation" data-cites="cui2020learning">(<a href="#/references" role="doc-biblioref" onclick="">Cui et al., 2020</a>)</span></li>
+</ul>
+<p><strong>STGNN for Solar/PV Forecasting</strong></p>
+<ul>
+<li>Spatiotemporal GNN(st-GNN) for PV performance prediction <span class="citation" data-cites="khodayar2021spatio">(<a href="#/references" role="doc-biblioref" onclick="">Khodayar et al., 2021</a>)</span>: 316 systems, outperforms temporal-only models</li>
+</ul>
+</section></section>
+<section>
+<section id="challenges-in-graph-construction" class="title-slide slide level1 center">
+<h1>Challenges in Graph Construction</h1>
+
+</section>
+<section id="challenges-in-applying-stgnn" class="slide level2">
+<h2>Challenges in Applying STGNN</h2>
+<p><strong>Key Issue</strong>: STGNN cannot be directly applied to solar irradiance data</p>
+<p><strong>Absence of Adjacency Matrix <span class="math inline">\(\mathbf{A}\)</span></strong></p>
+<ul>
+<li>STGNN typically <strong>assumes</strong> that node connectivity information <span class="math inline">\(\mathbf{A}\)</span> is <strong>given</strong></li>
+<li>However, this is generally <strong>not provided information</strong></li>
+</ul>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 55%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Domain</th>
+<th style="text-align: left;">Adjacency Matrix <span class="math inline">\(\mathbf{A}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Traffic Networks</td>
+<td style="text-align: left;">Road connectivity is <strong>clearly given</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Weather Observation Networks</td>
+<td style="text-align: left;">Regional connectivity is <strong>not given</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Therefore, <span class="math inline">\(\mathbf{A}\)</span> must be estimated</strong></p>
+</section>
+<section id="estimating-mathbfa-method-1-distance-based" class="slide level2">
+<h2>Estimating <span class="math inline">\(\mathbf{A}\)</span> Method 1: Distance-Based</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figs/fig3.png" style="width:100.0%"></p>
-<figcaption>거리는 비슷하지만 패턴은 다른 두 쌍</figcaption>
+<figcaption>Figure: Comparison of 대전–서산 (96.2 km) and 철원–인천 (94.9 km). Similar distance, but different pattern similarity.</figcaption>
 </figure>
 </div>
 </div><div class="column" style="width:40%;">
-<p><strong>비교: 두 지역 쌍</strong></p>
+<p><strong>Distance-Based Estimation</strong></p>
+<ul>
+<li>Assume nearby regions have similar solar irradiance</li>
+</ul>
+<p><strong>But this assumption often fails</strong></p>
+<ul>
+<li>Even if distance is close, <strong>different terrain leads to different climate characteristics</strong></li>
+</ul>
+<div style="width: fit-content; margin: auto;">
 <table class="caption-top">
 <thead>
 <tr class="header">
-<th>지역 쌍</th>
-<th>거리</th>
-<th>유사성</th>
+<th style="text-align: center;">Region Pair</th>
+<th style="text-align: center;">Distance</th>
+<th style="text-align: left;">Pattern Similarity</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>대전-서산</td>
-<td>96.2 km</td>
-<td><strong>낮음</strong></td>
+<td style="text-align: center;">대전-서산</td>
+<td style="text-align: center;">96.2 km</td>
+<td style="text-align: left;"><strong>Low</strong></td>
 </tr>
 <tr class="even">
-<td>철원-인천</td>
-<td>94.9 km</td>
-<td><strong>높음</strong></td>
+<td style="text-align: center;">철원-인천</td>
+<td style="text-align: center;">94.9 km</td>
+<td style="text-align: left;"><strong>High</strong></td>
 </tr>
 </tbody>
 </table>
-<p>→ 물리적 거리만으로는 기후적 유사성 설명 불가</p>
+</div>
+<p>Similar distance does not guarantee similar patterns</p>
 </div></div>
 </section>
-<section id="가짜-상관성-spurious-correlation-문제" class="slide level2">
-<h2>가짜 상관성 (Spurious Correlation) 문제</h2>
+<section id="estimating-mathbfa-method-2-correlation-based" class="slide level2">
+<h2>Estimating <span class="math inline">\(\mathbf{A}\)</span> Method 2: Correlation-Based</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figs/fig4.png" style="width:90.0%"></p>
-<figcaption>전국 태양복사량 상관행렬</figcaption>
+<figcaption>Figure: Correlation matrix of solar irradiance among all stations. Overall correlations are very high.</figcaption>
 </figure>
 </div>
 </div><div class="column" style="width:50%;">
-<p><strong>문제점</strong></p>
+<p><strong>Correlation-Based Estimation</strong></p>
 <ul>
-<li>대부분 지역 쌍에서 <strong>매우 높은 상관</strong> (최저 0.6422)</li>
-<li>직관적으로 기대되는 수준보다 <strong>지나치게 높음</strong></li>
-<li>실제 기후적 유사성과 <strong>불일치</strong></li>
+<li>Correlation matrix of solar irradiance among 44 stations</li>
 </ul>
-<p><strong>원인</strong>: 밤에 모든 지역이 0이 되는 <strong>주기성</strong>이 상관을 인위적으로 높임</p>
+<p><strong>Problem</strong></p>
+<ul>
+<li>Most pairs show <strong>very high correlation</strong></li>
+<li>Even the <strong>lowest correlation is 0.64</strong> — unexpectedly high</li>
+<li>Much higher than intuitively expected</li>
+<li>Does not match actual climatic similarity between regions</li>
+</ul>
 </div></div>
 </section>
-<section id="가짜-상관성의-시각화" class="slide level2">
-<h2>가짜 상관성의 시각화</h2>
+<section id="visualization-of-spurious-correlation" class="slide level2">
+<h2>Visualization of Spurious Correlation</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="figs/fig5.png" style="width:100.0%"></p>
-<figcaption>서울-흑산도 vs 고창-영광군</figcaption>
+<figcaption>Figure: 서울–흑산도 (r=0.6422) vs 고창–영광 (r=0.9681). High correlation doesn’t mean similar patterns.</figcaption>
 </figure>
 </div>
 </div><div class="column" style="width:50%;">
+<div style="width: fit-content; margin: auto;">
 <table class="caption-top">
 <thead>
 <tr class="header">
-<th>지역 쌍</th>
-<th>상관계수</th>
-<th>실제 패턴</th>
+<th style="text-align: center;">Region Pair</th>
+<th style="text-align: center;">Correlation</th>
+<th style="text-align: left;">Actual Pattern</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>고창-영광군</td>
-<td>0.9681</td>
-<td>매우 유사</td>
+<td style="text-align: center;">고창–영광</td>
+<td style="text-align: center;">0.9681</td>
+<td style="text-align: left;">High similarity</td>
 </tr>
 <tr class="even">
-<td>서울-흑산도</td>
-<td>0.6422</td>
-<td><strong>상반됨</strong></td>
+<td style="text-align: center;">서울–흑산도</td>
+<td style="text-align: center;">0.6422</td>
+<td style="text-align: left;"><strong>Nearly opposite patterns</strong></td>
 </tr>
 </tbody>
 </table>
-<p>서울이 높을 때 흑산도는 낮고, 그 반대도 발생</p>
-<p>→ <strong>단순 상관계수의 한계</strong></p>
-</div></div>
-</section>
-<section id="히스토그램으로-본-가짜-상관성" class="slide level2">
-<h2>히스토그램으로 본 가짜 상관성</h2>
-<div class="columns">
-<div class="column" style="width:60%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/fig6.png" style="width:100.0%"></p>
-<figcaption>일사량 차이 히스토그램</figcaption>
-</figure>
 </div>
-</div><div class="column" style="width:40%;">
+<p><strong>서울–흑산도</strong></p>
 <ul>
-<li>차이값이 0에 집중 → 유사해 보임</li>
-<li><strong>원인</strong>: 밤 시간대에 둘 다 0</li>
-<li>실제 기후적 동조성이 아닌 <strong>주기성의 착시</strong></li>
+<li>Patterns appear <strong>nearly negatively correlated</strong></li>
+<li>Yet the correlation coefficient is <strong>0.64 — very high</strong></li>
+</ul>
+<p><strong>Problem</strong></p>
+<ul>
+<li>If we apply a model directly, 서울 prediction would consider 흑산도 with <strong>weight 0.6</strong></li>
+<li>This might be useful for nighttime zeros, but <strong>useless for daytime prediction</strong></li>
 </ul>
 </div></div>
 </section></section>
 <section>
-<section id="제안-방법-ebt-stgnn" class="title-slide slide level1 center">
-<h1>제안 방법: EBT + STGNN</h1>
+<section id="proposed-method" class="title-slide slide level1 center">
+<h1>Proposed Method</h1>
 
 </section>
-<section id="핵심-아이디어" class="slide level2">
-<h2>핵심 아이디어</h2>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<section id="proposed-method-multiplicative-decomposition" class="slide level2">
+<h2>Proposed Method: Multiplicative Decomposition</h2>
+<p><strong>Our Goal: Decomposing Periodicity</strong></p>
+<ul>
+<li>Spurious correlation arises due to the <strong>periodic component</strong> (nighttime zeros). The correlation we intuitively expect reflects <strong>similarity excluding periodicity</strong></li>
+<li>If we can <strong>separate the periodic component</strong> from the signal, the problem may be resolved</li>
+</ul>
+<p><strong>Preliminary: Signal decomposition is not limited to additive models</strong></p>
+<p><span class="math display">\[\cos(58\pi t) + \cos(62\pi t) = 2\cos(60\pi t) \cdot \cos(2\pi t)\]</span></p>
+<ul>
+<li><strong>Left-hand side</strong>: Additive model (sum of two frequency components)</li>
+<li><strong>Right-hand side</strong>: Multiplicative model (carrier × envelope)</li>
+</ul>
+<p><strong>Decompose solar irradiance multiplicatively</strong></p>
+<p><span class="math display">\[y_{v,t} = y_{v,t}^U \times y_{v,t}^P\]</span></p>
+<ul>
+<li><span class="math inline">\(y_{v,t}^U\)</span>: <strong>Climate component</strong> — reflects weather conditions (upper envelope)</li>
+<li><span class="math inline">\(y_{v,t}^P\)</span>: <strong>Periodic component</strong> — sunrise/sunset pattern (normalized daily cycle, <span class="math inline">\(\in [0,1]\)</span>)</li>
+</ul>
+</section>
+<section id="ebt-decomposition-process" class="slide level2">
+<h2>EBT Decomposition Process</h2>
+
+<img data-src="figs/sec32_fig1.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: EBT decomposition process. Left: Elastic bands with τ=24 and upper envelope extraction. Right: Amplitude modulation <span class="math inline">\(y^U\)</span> (top) and periodic component <span class="math inline">\(y^P\)</span> (bottom).</p><p><strong>Solved via EBT(Elastic-Band Transform)</strong> <span class="citation" data-cites="choi2023elastic choi2024decomposition">(<a href="#/references" role="doc-biblioref" onclick="">Choi &amp; Oh, 2023</a>, <a href="#/references" role="doc-biblioref" onclick="">2024</a>)</span></p>
+<ul>
+<li><strong>Left</strong>: Construct elastic bands with <span class="math inline">\(\tau=24\)</span> hourly intervals → extract upper envelope</li>
+<li><strong>Top right</strong>: Climate component <span class="math inline">\(y_{v,t}^U\)</span> — maximum achievable irradiance given weather</li>
+<li><strong>Bottom right</strong>: Periodic component <span class="math inline">\(y_{v,t}^P\)</span> — normalized sunrise/sunset pattern</li>
+</ul>
+</section>
+<section id="correlation-structure-after-decomposition" class="slide level2">
+<h2>Correlation Structure After Decomposition</h2>
+
+<img data-src="figs/corr_grid_plot_v3.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Correlation structure comparison after decomposition. <span class="math inline">\(y^P\)</span>: Dense (nationwide similarity). <span class="math inline">\(y^U\)</span>: Sparse (climatologically similar regions only).</p><p><strong>Decomposition works well!</strong></p>
+<ul>
+<li><strong>Periodic component</strong> <span class="math inline">\(y^P\)</span>: Correlation matrix becomes <strong>denser</strong> — nearly identical nationwide (<span class="math inline">\(r \approx 1\)</span>)</li>
+<li><strong>Climate component</strong> <span class="math inline">\(y^U\)</span>: Correlation matrix becomes <strong>sparser</strong> — high correlation only among climatically similar regions</li>
+</ul>
+</section>
+<section id="overall-framework" class="slide level2">
+<h2>Overall Framework</h2>
+
+<img data-src="pipeline.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Overall framework. Decompose with EBT, apply STGNN to each component separately, then recombine predictions.</p><p><strong>Apply STGNN to each decomposed component, then recombine</strong></p>
+<p><span class="math display">\[\hat{y}_{v,t+h} = \hat{y}_{v,t+h}^U \times \hat{y}_{v,t+h}^P\]</span></p>
+</section>
+<section id="advantages-of-the-proposed-method" class="slide level2">
+<h2>Advantages of the Proposed Method</h2>
+<p><strong>1. Reasonable Graph Connectivity</strong></p>
+<ul>
+<li><strong>Periodic <span class="math inline">\(y^P\)</span></strong> → <strong>Dense graph</strong>: Sunrise/sunset pattern similar across all regions</li>
+<li><strong>Climate <span class="math inline">\(y^U\)</span></strong> → <strong>Sparse graph</strong>: Only climatically similar regions matter</li>
+</ul>
+<p><strong>2. Easier Prediction</strong></p>
+<ul>
+<li><strong>Periodic component</strong>: Highly regular → easy for the model to learn</li>
+<li><strong>Climate component</strong>: Removing periodicity simplifies the signal → easier to predict</li>
+</ul>
+<p><strong>3. Component-Specific Hyperparameter Optimization</strong></p>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 35%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Component</th>
+<th style="text-align: center;">Optimal Lag</th>
+<th style="text-align: left;">Number of Filters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Periodic <span class="math inline">\(y^P\)</span></td>
+<td style="text-align: center;"><strong>lag = 24</strong> (full day)</td>
+<td style="text-align: left;">More filters needed</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Climate <span class="math inline">\(y^U\)</span></td>
+<td style="text-align: center;"><strong>lag = 4</strong> (short-term sufficient)</td>
+<td style="text-align: left;">Fewer filters sufficient</td>
+</tr>
+</tbody>
+</table>
 </div>
-<p><strong>Elastic-Band Transform (EBT)</strong></p>
+</section></section>
+<section>
+<section id="experiments" class="title-slide slide level1 center">
+<h1>Experiments</h1>
+
+</section>
+<section id="stgnn-architectures-used-in-experiments" class="slide level2">
+<h2>STGNN Architectures Used in Experiments</h2>
+<p><strong>Core idea</strong>: Replace standard matrix multiplication with graph convolution</p>
+<p><span class="math display">\[\mathbf{h}_t = \sigma\left( \mathbf{W} \cdot \text{GraphConv}(\mathbf{X}_t, \mathbf{A}) + \mathbf{U} \cdot \mathbf{h}_{t-1} \right)\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathbf{X}_t \in \mathbb{R}^{N \times F}\)</span>: input features at time <span class="math inline">\(t\)</span> (<span class="math inline">\(N\)</span>: nodes, <span class="math inline">\(F\)</span>: features)</li>
+<li><span class="math inline">\(\mathbf{A} \in \mathbb{R}^{N \times N}\)</span>: adjacency matrix, <span class="math inline">\(\mathbf{h}_t\)</span>: hidden state</li>
+<li><span class="math inline">\(\mathbf{W}, \mathbf{U}\)</span>: learnable weight matrices, <span class="math inline">\(\sigma\)</span>: activation function</li>
+</ul>
+</section>
+<section id="stgnn-architectures-used-in-experiment" class="slide level2">
+<h2>STGNN Architectures Used in Experiment</h2>
+<p><strong>Spectral Convolution</strong> (GConvGRU/GConvLSTM, T-GCN):</p>
+<p><span class="math display">\[\mathbf{X} \star_{\mathcal{G}} \mathbf{g} = \mathbf{U} \mathbf{g}_\theta \mathbf{U}^\top \mathbf{X} \approx \sum_{k=0}^{K-1} \theta_k T_k(\tilde{\mathbf{L}}) \mathbf{X}\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathbf{L} = \mathbf{U} \mathbf{\Lambda} \mathbf{U}^\top\)</span>: eigen-decomposition of graph Laplacian</li>
+<li><span class="math inline">\(T_k\)</span>: Chebyshev polynomial of order <span class="math inline">\(k\)</span>, <span class="math inline">\(K\)</span>: polynomial order</li>
+</ul>
+<p><strong>Diffusion Convolution</strong> (DCRNN):</p>
+<p><span class="math display">\[\mathbf{X} \star_{\mathcal{G}} \mathbf{g} = \sum_{j=0}^{J-1} \left( \theta_j \mathbf{P}^j + \theta_j' (\mathbf{P}^\top)^j \right) \mathbf{X}\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathbf{P} = \mathbf{D}^{-1}\mathbf{A}\)</span>: random walk transition matrix (<span class="math inline">\(\mathbf{A}\)</span>: adjacency, <span class="math inline">\(\mathbf{D}\)</span>: degree)</li>
+<li><span class="math inline">\(J\)</span>: diffusion steps (hops)</li>
+</ul>
+</section>
+<section id="stgnn-architectures-used-in-experiment-1" class="slide level2">
+<h2>STGNN Architectures Used in Experiment</h2>
+<div style="width: 70%; margin: auto;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">Temporal</th>
+<th style="text-align: center;">GNN Layer</th>
+<th style="text-align: center;">Order</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>GConvGRU</strong></td>
+<td style="text-align: center;">GRU</td>
+<td style="text-align: center;">Chebyshev</td>
+<td style="text-align: center;"><span class="math inline">\(K \geq 2\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>GConvLSTM</strong></td>
+<td style="text-align: center;">LSTM</td>
+<td style="text-align: center;">Chebyshev</td>
+<td style="text-align: center;"><span class="math inline">\(K \geq 2\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>T-GCN</strong></td>
+<td style="text-align: center;">GRU</td>
+<td style="text-align: center;">GCN</td>
+<td style="text-align: center;"><span class="math inline">\(K = 1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>DCRNN</strong></td>
+<td style="text-align: center;">GRU</td>
+<td style="text-align: center;">DiffConv</td>
+<td style="text-align: center;"><span class="math inline">\(J \geq 2\)</span></td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="callout-content">
-<p>태양복사량을 <strong>곱셈 형태</strong>로 분해: <span class="math inline">\(y_{v,t} = y_{v,t}^U \times y_{v,t}^P\)</span></p>
+<p><strong>References</strong>: <span class="citation" data-cites="seo2018structured">Seo et al. (<a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span>, <span class="citation" data-cites="zhao2019t">Zhao et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span>, <span class="citation" data-cites="li2017diffusion">Li et al. (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span>, <span class="citation" data-cites="rozemberczki2021pytorch">Rozemberczki et al. (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span></p>
+</section>
+<section id="experimental-setup" class="slide level2">
+<h2>Experimental Setup</h2>
+<ul>
+<li><strong>Data</strong>: 44 weather stations in Korea, approximately 107 days of hourly observations</li>
+<li><strong>Data split</strong>: Training 80% / Test 20%</li>
+<li><strong>Test period event</strong>: <strong>Typhoon Hinnamnor</strong> in early September 2022 <span class="citation" data-cites="digital_typhoon">(<a href="#/references" role="doc-biblioref" onclick="">National Institute of Informatics, 2022</a>)</span></li>
+</ul>
+<p><strong>Comparison of three prediction strategies</strong></p>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 55%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Strategy</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>Classic</strong></td>
+<td style="text-align: left;">Direct prediction of raw time series with a single STGNN</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>Proposed <span class="math inline">\((L,L)\)</span></strong></td>
+<td style="text-align: left;">Apply same lag to both components after EBT decomposition</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>Proposed <span class="math inline">\((4,L)\)</span></strong></td>
+<td style="text-align: left;">Climate component lag=4, periodic component lag=<span class="math inline">\(L\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="experimental-results-mse" class="slide level2">
+<h2>Experimental Results (MSE)</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">GConvGRU</a></li><li><a href="#tabset-1-2">GConvLSTM</a></li><li><a href="#tabset-1-3">T-GCN</a></li><li><a href="#tabset-1-4">DCRNN</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Lag</th>
+<th style="text-align: center;">F</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed (L,L)</th>
+<th style="text-align: center;">Proposed (4,L)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0535<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.0430<sub>±0.0021</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0419</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0537<sub>±0.0012</sub></td>
+<td style="text-align: center;">0.0413<sub>±0.0008</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0408</strong><sub>±0.0010</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0535<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.0416<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0404</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0541<sub>±0.0005</sub></td>
+<td style="text-align: center;">0.0408<sub>±0.0012</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0400</strong><sub>±0.0003</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0534<sub>±0.0012</sub></td>
+<td style="text-align: center;">0.0438<sub>±0.0013</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0426</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0544<sub>±0.0008</sub></td>
+<td style="text-align: center;">0.0426<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0416</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0548<sub>±0.0008</sub></td>
+<td style="text-align: center;">0.0423<sub>±0.0017</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0415</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0549<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.0427<sub>±0.0017</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0411</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0657<sub>±0.0023</sub></td>
+<td style="text-align: center;">0.0512<sub>±0.0016</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0461</strong><sub>±0.0013</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0662<sub>±0.0018</sub></td>
+<td style="text-align: center;">0.0499<sub>±0.0029</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0471</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0675<sub>±0.0024</sub></td>
+<td style="text-align: center;">0.0507<sub>±0.0026</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0470</strong><sub>±0.0008</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0677<sub>±0.0010</sub></td>
+<td style="text-align: center;">0.0503<sub>±0.0013</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0472</strong><sub>±0.0007</sub></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-2">
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Lag</th>
+<th style="text-align: center;">F</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed (L,L)</th>
+<th style="text-align: center;">Proposed (4,L)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0518<sub>±0.0006</sub></td>
+<td style="text-align: center;">0.0601<sub>±0.0551</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0416</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0518<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.0418<sub>±0.0005</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0408</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0519<sub>±0.0004</sub></td>
+<td style="text-align: center;">0.0416<sub>±0.0007</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0405</strong><sub>±0.0005</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0525<sub>±0.0004</sub></td>
+<td style="text-align: center;">0.0419<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0402</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0524<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.0437<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0419</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0530<sub>±0.0008</sub></td>
+<td style="text-align: center;">0.0433<sub>±0.0013</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0419</strong><sub>±0.0004</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0534<sub>±0.0005</sub></td>
+<td style="text-align: center;">0.0427<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0418</strong><sub>±0.0006</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0534<sub>±0.0005</sub></td>
+<td style="text-align: center;">0.0425<sub>±0.0009</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0419</strong><sub>±0.0005</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0618<sub>±0.0019</sub></td>
+<td style="text-align: center;">0.0487<sub>±0.0027</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0460</strong><sub>±0.0009</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0626<sub>±0.0013</sub></td>
+<td style="text-align: center;">0.0498<sub>±0.0028</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0461</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0641<sub>±0.0016</sub></td>
+<td style="text-align: center;">0.0468<sub>±0.0017</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0466</strong><sub>±0.0007</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0644<sub>±0.0013</sub></td>
+<td style="text-align: center;">0.0486<sub>±0.0030</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0463</strong><sub>±0.0008</sub></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-3">
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Lag</th>
+<th style="text-align: center;">F</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed (L,L)</th>
+<th style="text-align: center;">Proposed (4,L)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.1297<sub>±0.0011</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1214</strong><sub>±0.0034</sub></span></td>
+<td style="text-align: center;">0.1343<sub>±0.0371</sub></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.1295<sub>±0.0007</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1245</strong><sub>±0.0074</sub></span></td>
+<td style="text-align: center;">0.1273<sub>±0.0084</sub></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.1307<sub>±0.0008</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1244</strong><sub>±0.0032</sub></span></td>
+<td style="text-align: center;">0.1265<sub>±0.0068</sub></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.1314<sub>±0.0007</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1250</strong><sub>±0.0061</sub></span></td>
+<td style="text-align: center;">0.1300<sub>±0.0087</sub></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.1312<sub>±0.0010</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1215</strong><sub>±0.0022</sub></span></td>
+<td style="text-align: center;">0.1221<sub>±0.0037</sub></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.1319<sub>±0.0008</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1217</strong><sub>±0.0016</sub></span></td>
+<td style="text-align: center;">0.1252<sub>±0.0065</sub></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.1322<sub>±0.0006</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1252</strong><sub>±0.0018</sub></span></td>
+<td style="text-align: center;">0.1262<sub>±0.0059</sub></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.1328<sub>±0.0007</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1256</strong><sub>±0.0026</sub></span></td>
+<td style="text-align: center;">0.1261<sub>±0.0030</sub></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.1366<sub>±0.0016</sub></td>
+<td style="text-align: center;">0.1506<sub>±0.0125</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1308</strong><sub>±0.0037</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.1388<sub>±0.0026</sub></td>
+<td style="text-align: center;">0.1749<sub>±0.0193</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1340</strong><sub>±0.0052</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.1391<sub>±0.0013</sub></td>
+<td style="text-align: center;">0.1732<sub>±0.0241</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1379</strong><sub>±0.0040</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.1402<sub>±0.0022</sub></td>
+<td style="text-align: center;">0.1710<sub>±0.0182</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.1391</strong><sub>±0.0044</sub></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-4">
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Lag</th>
+<th style="text-align: center;">F</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed (L,L)</th>
+<th style="text-align: center;">Proposed (4,L)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0577<sub>±0.0010</sub></td>
+<td style="text-align: center;">0.0829<sub>±0.0484</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0557</strong><sub>±0.0042</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0594<sub>±0.0015</sub></td>
+<td style="text-align: center;">0.0667<sub>±0.0080</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0540</strong><sub>±0.0020</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0603<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.0667<sub>±0.0097</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0526</strong><sub>±0.0022</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0595<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.0655<sub>±0.0047</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0529</strong><sub>±0.0014</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0583<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.1085<sub>±0.0604</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0536</strong><sub>±0.0022</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0589<sub>±0.0007</sub></td>
+<td style="text-align: center;">0.1267<sub>±0.0648</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0535</strong><sub>±0.0010</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0606<sub>±0.0010</sub></td>
+<td style="text-align: center;">0.0978<sub>±0.0435</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0549</strong><sub>±0.0047</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0610<sub>±0.0011</sub></td>
+<td style="text-align: center;">0.0971<sub>±0.0438</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0551</strong><sub>±0.0034</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">0.0815<sub>±0.0077</sub></td>
+<td style="text-align: center;">0.1324<sub>±0.0262</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0631</strong><sub>±0.0047</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">16</td>
+<td style="text-align: center;">0.0872<sub>±0.0055</sub></td>
+<td style="text-align: center;">0.1403<sub>±0.0331</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0669</strong><sub>±0.0048</sub></span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">0.0847<sub>±0.0041</sub></td>
+<td style="text-align: center;">0.1366<sub>±0.0346</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0658</strong><sub>±0.0034</sub></span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">24</td>
+<td style="text-align: center;">32</td>
+<td style="text-align: center;">0.0885<sub>±0.0032</sub></td>
+<td style="text-align: center;">0.1357<sub>±0.0258</sub></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0656</strong><sub>±0.0052</sub></span></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
+</section>
+<section id="typhoon-hinnamnor-period" class="slide level2">
+<h2>Typhoon Hinnamnor Period</h2>
+<p><strong>Typhoon Hinnamnor</strong> (2022): Super typhoon that struck Korea on Sep 5-6, 2022. One of the strongest typhoons to affect Korea, causing significant damage to the southeastern region. (<a href="http://agora.ex.nii.ac.jp/digital-typhoon/summary/wnp/s/202211.html.en">Digital Typhoon</a>)</p>
+
+<img data-src="figs/251121_top9_typhoon_map_timeseries_geojson.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Typhoon Hinnamnor period analysis. Top 9 regions with highest MSE reduction along the typhoon path.</p></section>
+<section id="regional-performance-improvement-during-typhoon-period" class="slide level2">
+<h2>Regional Performance Improvement During Typhoon Period</h2>
+<div style="width: fit-content; margin: auto;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">#</th>
+<th style="text-align: left;">Region</th>
+<th style="text-align: center;">Classic</th>
+<th style="text-align: center;">Proposed</th>
+<th style="text-align: center;">MSE Reduction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: left;">경주</td>
+<td style="text-align: center;">0.0791</td>
+<td style="text-align: center;">0.0436</td>
+<td style="text-align: center;"><strong>44.9%</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: left;">함양</td>
+<td style="text-align: center;">0.0596</td>
+<td style="text-align: center;">0.0343</td>
+<td style="text-align: center;"><strong>42.5%</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">창원</td>
+<td style="text-align: center;">0.0644</td>
+<td style="text-align: center;">0.0375</td>
+<td style="text-align: center;"><strong>41.8%</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: left;">의령</td>
+<td style="text-align: center;">0.0561</td>
+<td style="text-align: center;">0.0353</td>
+<td style="text-align: center;"><strong>37.1%</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5</td>
+<td style="text-align: left;">부산</td>
+<td style="text-align: center;">0.0753</td>
+<td style="text-align: center;">0.0493</td>
+<td style="text-align: center;"><strong>34.5%</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6</td>
+<td style="text-align: left;">고산</td>
+<td style="text-align: center;">0.0388</td>
+<td style="text-align: center;">0.0257</td>
+<td style="text-align: center;"><strong>33.8%</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">7</td>
+<td style="text-align: left;">양산</td>
+<td style="text-align: center;">0.0746</td>
+<td style="text-align: center;">0.0497</td>
+<td style="text-align: center;"><strong>33.4%</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8</td>
+<td style="text-align: left;">김해</td>
+<td style="text-align: center;">0.0725</td>
+<td style="text-align: center;">0.0485</td>
+<td style="text-align: center;"><strong>33.1%</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">9</td>
+<td style="text-align: left;">청송</td>
+<td style="text-align: center;">0.0539</td>
+<td style="text-align: center;">0.0363</td>
+<td style="text-align: center;"><strong>32.6%</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>→ <strong>32-45% MSE reduction</strong> along the typhoon path (southeastern Korean Peninsula)</p>
+</section></section>
+<section>
+<section id="discussions" class="title-slide slide level1 center">
+<h1>Discussions</h1>
+
+</section>
+<section id="key-contributions" class="slide level2">
+<h2>Key Contributions</h2>
+<p><strong>1. Multiplicative Decomposition Framework</strong></p>
+<ul>
+<li>Introduced <strong><span class="math inline">\(y = y^U \times y^P\)</span> decomposition model</strong> for solar irradiance</li>
+<li><strong>Resolved spurious correlation problem</strong> caused by periodicity</li>
+</ul>
+<p><strong>2. Asymmetric Component Modeling</strong></p>
+<ul>
+<li><strong>Independent graph structures and hyperparameters</strong> tailored to each component</li>
+<li>Climate: lag=4, sparse / Periodic: lag=24, dense</li>
+</ul>
+<p><strong>3. Robustness Under Extreme Weather</strong></p>
+<ul>
+<li><strong>32-45% MSE reduction</strong> during Typhoon Hinnamnor period</li>
+</ul>
+</section>
+<section id="future-work" class="slide level2">
+<h2>Future Work</h2>
+<ul>
+<li><strong>External data integration</strong>: satellite cloud imagery, numerical weather prediction, atmospheric reanalysis</li>
+<li><strong>Hybrid modeling</strong>: replace <span class="math inline">\(y^P\)</span> with astronomical calculations, focus learning capacity on <span class="math inline">\(y^U\)</span></li>
+</ul>
+</section>
+<section id="reviewer-question-1-why-not-other-decomposition-methods" class="slide level2">
+<h2>Reviewer Question 1: Why Not Other Decomposition Methods?</h2>
+<blockquote>
+<p><em>“Comparison with alternative decomposition techniques such as STL, EMD, and Wavelet?”</em></p>
+</blockquote>
+<div style="width: 70%; margin: auto;">
+<table class="caption-top">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 35%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Method</th>
+<th style="text-align: center;">Decomposition Type</th>
+<th style="text-align: left;">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">STL</td>
+<td style="text-align: center;">Additive</td>
+<td style="text-align: left;">Daily component remains in residual</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">EMD</td>
+<td style="text-align: center;">Additive</td>
+<td style="text-align: left;">Periodic component not isolated to specific IMF</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Wavelet</td>
+<td style="text-align: center;">Additive</td>
+<td style="text-align: left;">Periodic energy dispersed across multiple levels</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>EBT</strong></td>
+<td style="text-align: center;"><strong>Multiplicative</strong></td>
+<td style="text-align: left;"><strong>Clean two-component separation</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>→ <strong>Additive methods fail to cleanly separate components. Only EBT achieves clean separation</strong></p>
+</section>
+<section id="decomposition-comparison-additive" class="slide level2">
+<h2>Decomposition Comparison: Additive</h2>
+
+<img data-src="figs/A1_fig1.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Additive decomposition comparison. EBT (top) vs STL, EMD, Wavelet.</p></section>
+<section id="decomposition-comparison-multiplicative" class="slide level2">
+<h2>Decomposition Comparison: Multiplicative</h2>
+
+<img data-src="figs/A1_fig2.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">Figure: Multiplicative decomposition comparison via log-transform. STL, EMD, Wavelet still fail to cleanly separate components.</p></section>
+<section id="reviewer-question-2-what-about-non-stgnn-deep-learning" class="slide level2">
+<h2>Reviewer Question 2: What About Non-STGNN Deep Learning?</h2>
+<blockquote>
+<p><em>“Comparison with LSTM, CNN-LSTM, TCN, etc.?”</em></p>
+</blockquote>
+<p><strong>Baseline models</strong>: TCN, LSTM, CNN-LSTM <span class="citation" data-cites="bai2018tcn hochreiter1997lstm agga2021short">(<a href="#/references" role="doc-biblioref" onclick="">Agga et al., 2021</a>; <a href="#/references" role="doc-biblioref" onclick="">Bai et al., 2018</a>; <a href="#/references" role="doc-biblioref" onclick="">Hochreiter &amp; Schmidhuber, 1997</a>)</span></p>
+<div style="width: fit-content; margin: auto;">
 <table class="caption-top">
 <colgroup>
 <col style="width: 33%">
@@ -350,581 +1289,123 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th>성분</th>
-<th>의미</th>
-<th>특성</th>
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">MSE</th>
+<th style="text-align: center;">Setting</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><span class="math inline">\(y_{v,t}^U\)</span></td>
-<td><strong>진폭 변조 (Amplitude)</strong></td>
-<td>기상 조건에 따른 최대 가능 복사량</td>
+<td style="text-align: center;">TCN</td>
+<td style="text-align: center;">0.0601<sub>±.0012</sub></td>
+<td style="text-align: center;">L=24</td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(y_{v,t}^P\)</span></td>
-<td><strong>주기 성분 (Periodic)</strong></td>
-<td>정규화된 일일 패턴 (<span class="math inline">\(\in [0,1]\)</span>)</td>
+<td style="text-align: center;">LSTM</td>
+<td style="text-align: center;">0.0841<sub>±.0023</sub></td>
+<td style="text-align: center;">L=8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">CNN-LSTM</td>
+<td style="text-align: center;">0.0975<sub>±.0037</sub></td>
+<td style="text-align: center;">L=8</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>Proposed (EBT+STGNN)</strong></td>
+<td style="text-align: center;"><span style="color: red;"><strong>0.0400</strong><sub>±.0003</sub></span></td>
+<td style="text-align: center;">L=8</td>
 </tr>
 </tbody>
 </table>
-<p>→ 각 성분을 <strong>독립적인 STGNN</strong>으로 모델링</p>
+</div>
+<p>→ <strong>STGNN leveraging spatial information significantly outperforms temporal-only models</strong> (33% improvement over TCN)</p>
 </section>
-<section id="ebt-분해-과정" class="slide level2">
-<h2>EBT 분해 과정</h2>
-
-<img data-src="figs/sec32_fig1.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">EBT 분해 과정 시각화</p><ul>
-<li><strong>왼쪽</strong>: Elastic Band 구성 (24개 밴드) → Upper Envelope 추출</li>
-<li><strong>오른쪽 상단</strong>: 진폭 변조 성분 <span class="math inline">\(y_{v,t}^U\)</span> (기상 변동 반영)</li>
-<li><strong>오른쪽 하단</strong>: 주기 성분 <span class="math inline">\(y_{v,t}^P\)</span> (태양 고도 패턴)</li>
-</ul>
-</section>
-<section id="ebt-분해-후-상관구조" class="slide level2">
-<h2>EBT 분해 후 상관구조</h2>
-
-<img data-src="figs/corr_grid_plot_v3.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">분해 후 상관구조 비교</p><p><strong>핵심 발견</strong></p>
-<ul>
-<li><span class="math inline">\(r_{v,s}^P \approx 1\)</span>: 주기 성분은 전국 거의 동일 (경도에 의해 결정)</li>
-<li><span class="math inline">\(r_{v,s}^U\)</span>: 진폭 성분은 <strong>지역 블록 구조</strong> → 진정한 기후적 유사성 반영</li>
-</ul>
-</section>
-<section id="이중-그래프-구조-dual-graph-structure" class="slide level2">
-<h2>이중 그래프 구조 (Dual Graph Structure)</h2>
-<table class="caption-top">
-<colgroup>
-<col style="width: 30%">
-<col style="width: 40%">
-<col style="width: 30%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>성분</th>
-<th>그래프</th>
-<th>특성</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><span class="math inline">\(y_{v,t}^P\)</span></td>
-<td><strong>Dense</strong> (전체 연결)</td>
-<td>모든 지역이 유사 (<span class="math inline">\(r \approx 1\)</span>)</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(y_{v,t}^U\)</span></td>
-<td><strong>Sparse</strong> (선택적 연결)</td>
-<td>기후적으로 유사한 지역만 연결</td>
-</tr>
-</tbody>
-</table>
-<p>→ 성분별로 <strong>최적화된 그래프 구조</strong> 사용</p>
-</section>
-<section id="전체-프레임워크" class="slide level2">
-<h2>전체 프레임워크</h2>
-
-<img data-src="pipeline.png" style="width:85.0%" class="r-stretch quarto-figure-center"><p class="caption">제안 프레임워크: EBT 분해 → 이중 그래프 구성 → STGNN 학습 → 재결합</p></section>
-<section id="stgnn-모델-비교" class="slide level2">
-<h2>STGNN 모델 비교</h2>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Model</th>
-<th>Temporal</th>
-<th>GNN Layer</th>
-<th>Key Characteristics</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>GConvGRU</strong></td>
-<td>GRU</td>
-<td>Chebyshev</td>
-<td>Spectral conv in GRU gates</td>
-</tr>
-<tr class="even">
-<td><strong>GConvLSTM</strong></td>
-<td>LSTM</td>
-<td>Chebyshev</td>
-<td>Spectral conv with peephole</td>
-</tr>
-<tr class="odd">
-<td><strong>T-GCN</strong></td>
-<td>GRU</td>
-<td>GCN</td>
-<td>Lightweight, first-order approx</td>
-</tr>
-<tr class="even">
-<td><strong>DCRNN</strong></td>
-<td>GRU</td>
-<td>DiffConv</td>
-<td>Bidirectional random walks</td>
-</tr>
-</tbody>
-</table>
-</section></section>
-<section>
-<section id="실험-결과" class="title-slide slide level1 center">
-<h1>실험 결과</h1>
-
-</section>
-<section id="실험-설정" class="slide level2">
-<h2>실험 설정</h2>
-<ul>
-<li><strong>데이터</strong>: 44개 지역, 2,568 시점 (약 107일)</li>
-<li><strong>학습/테스트</strong>: 80% / 20%</li>
-<li><strong>테스트 기간 특징</strong>: 2022년 9월 초 <strong>태풍 힌남노</strong> 포함</li>
-</ul>
-<div class="callout callout-warning callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Warning</strong></p>
-</div>
-<div class="callout-content">
-<p>태풍 힌남노: 한반도 직격, 순간 최대 풍속 40-50 m/s, 극단적 일사량 변동</p>
-</div>
-</div>
-</div>
-</section>
-<section id="성능-비교-gconvgru" class="slide level2">
-<h2>성능 비교: GConvGRU</h2>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Lag</th>
-<th>Filters</th>
-<th>Classic</th>
-<th>Proposed (L,L)</th>
-<th><strong>Proposed (4,L)</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>8</td>
-<td>32</td>
-<td>0.0541</td>
-<td>0.0408</td>
-<td><strong>0.0400</strong></td>
-</tr>
-<tr class="even">
-<td>12</td>
-<td>32</td>
-<td>0.0549</td>
-<td>0.0427</td>
-<td><strong>0.0411</strong></td>
-</tr>
-<tr class="odd">
-<td>24</td>
-<td>32</td>
-<td>0.0677</td>
-<td>0.0503</td>
-<td><strong>0.0472</strong></td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><strong>Proposed (4,L)</strong>: <span class="math inline">\(y^U\)</span>는 lag 4, <span class="math inline">\(y^P\)</span>는 lag L</li>
-<li>모든 설정에서 <strong>일관된 성능 향상</strong></li>
-<li>최대 <strong>30% 이상</strong> MSE 감소</li>
-</ul>
-</section>
-<section id="성능-비교-gconvlstm" class="slide level2">
-<h2>성능 비교: GConvLSTM</h2>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Lag</th>
-<th>Filters</th>
-<th>Classic</th>
-<th>Proposed (L,L)</th>
-<th><strong>Proposed (4,L)</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>8</td>
-<td>32</td>
-<td>0.0525</td>
-<td>0.0419</td>
-<td><strong>0.0402</strong></td>
-</tr>
-<tr class="even">
-<td>12</td>
-<td>32</td>
-<td>0.0534</td>
-<td>0.0425</td>
-<td><strong>0.0419</strong></td>
-</tr>
-<tr class="odd">
-<td>24</td>
-<td>32</td>
-<td>0.0644</td>
-<td>0.0486</td>
-<td><strong>0.0463</strong></td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>GConvGRU와 유사하게 <strong>최고 성능</strong> 달성</li>
-<li>표준편차도 매우 낮음 (&lt; 0.0005) → <strong>안정적 학습</strong></li>
-</ul>
-</section>
-<section id="비대칭-lag의-효과" class="slide level2">
-<h2>비대칭 Lag의 효과</h2>
-<div class="callout callout-note callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>핵심 발견</strong></p>
-</div>
-<div class="callout-content">
-<p>진폭 성분 <span class="math inline">\(y^U\)</span>는 <strong>단순한 시간 구조</strong> → 짧은 lag (4)로 충분</p>
-</div>
-</div>
-</div>
-<p><strong>GConvGRU (lag 24, 24 filters) 예시</strong></p>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>방법</th>
-<th>MSE</th>
-<th>표준편차</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Classic</td>
-<td>0.0675</td>
-<td>0.0024</td>
-</tr>
-<tr class="even">
-<td>Proposed (L,L)</td>
-<td>0.0507</td>
-<td>0.0026</td>
-</tr>
-<tr class="odd">
-<td><strong>Proposed (4,L)</strong></td>
-<td><strong>0.0470</strong></td>
-<td><strong>0.0008</strong></td>
-</tr>
-</tbody>
-</table>
-<p>→ 정확도 향상 + <strong>학습 안정성</strong> 동시 확보</p>
-</section>
-<section id="태풍-힌남노-기간-성능" class="slide level2">
-<h2>태풍 힌남노 기간 성능</h2>
-
-<img data-src="figs/251121_top9_typhoon_map_timeseries_geojson.png" style="width:100.0%" class="r-stretch quarto-figure-center"><p class="caption">태풍 영향 상위 9개 지역</p></section>
-<section id="태풍-기간-개선율-상위-지역" class="slide level2">
-<h2>태풍 기간 개선율 상위 지역</h2>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Rank</th>
-<th>Region</th>
-<th>MSE (Classic)</th>
-<th>MSE (Proposed)</th>
-<th><strong>Improvement</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>경주시</td>
-<td>0.0791</td>
-<td>0.0436</td>
-<td><strong>44.9%</strong></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>함양군</td>
-<td>0.0596</td>
-<td>0.0343</td>
-<td><strong>42.5%</strong></td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td>창원</td>
-<td>0.0644</td>
-<td>0.0375</td>
-<td><strong>41.8%</strong></td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>의령군</td>
-<td>0.0561</td>
-<td>0.0353</td>
-<td><strong>37.1%</strong></td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>부산</td>
-<td>0.0753</td>
-<td>0.0493</td>
-<td><strong>34.5%</strong></td>
-</tr>
-</tbody>
-</table>
-<p>→ 태풍 경로 지역에서 <strong>32-45% 개선</strong></p>
-</section>
-<section id="통계적-유의성" class="slide level2">
-<h2>통계적 유의성</h2>
-<p><strong>Diebold-Mariano Test 결과</strong></p>
-<ul>
-<li>48개 설정 중 <strong>47개 (97.9%)</strong> 에서 <span class="math inline">\(p &lt; 0.01\)</span></li>
-<li>Median p-value &lt; <span class="math inline">\(10^{-6}\)</span></li>
-</ul>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Model</th>
-<th>Avg DM Statistic</th>
-<th>Avg Improvement</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>GConvGRU</td>
-<td>21.26</td>
-<td><strong>25.25%</strong></td>
-</tr>
-<tr class="even">
-<td>GConvLSTM</td>
-<td>19.53</td>
-<td>23.14%</td>
-</tr>
-<tr class="odd">
-<td>DCRNN</td>
-<td>13.84</td>
-<td>16.55%</td>
-</tr>
-<tr class="even">
-<td>T-GCN</td>
-<td>5.88</td>
-<td>4.33%</td>
-</tr>
-</tbody>
-</table>
-</section></section>
-<section>
-<section id="결론" class="title-slide slide level1 center">
-<h1>결론</h1>
-
-</section>
-<section id="주요-기여" class="slide level2">
-<h2>주요 기여</h2>
-<ol type="1">
-<li><strong>곱셈 분해의 원리</strong>: 태양복사량은 주기 × 진폭으로 분해되어야 함
-<ul>
-<li>가산 모델의 가짜 상관성 문제 해결</li>
-</ul></li>
-<li><strong>비대칭 모델링</strong>: 성분별 특성에 맞는 독립적 최적화
-<ul>
-<li>진폭: 짧은 lag, sparse graph</li>
-<li>주기: 긴 lag, dense graph</li>
-</ul></li>
-<li><strong>극한 기상 강건성</strong>: 태풍 기간에도 32-45% 성능 향상</li>
-</ol>
-</section>
-<section id="향후-연구-방향" class="slide level2">
-<h2>향후 연구 방향</h2>
-<ul>
-<li>다른 주기성 신호로의 확장 (기온, 풍력 등)</li>
-<li>실시간 운영 시스템 적용</li>
-<li>더 다양한 STGNN 아키텍처 탐색</li>
-</ul>
-</section></section>
-<section>
-<section id="appendix" class="title-slide slide level1 center">
-<h1>Appendix</h1>
-
-</section>
-<section id="왜-ebt인가---분해-방법-비교" class="slide level2">
-<h2>왜 EBT인가? - 분해 방법 비교</h2>
-<p><strong>비교 대상</strong>: STL, EMD, Wavelet vs EBT</p>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>방법</th>
-<th>분해 형태</th>
-<th>문제점</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>STL</td>
-<td>가산 (Trend + Seasonal + Residual)</td>
-<td>Residual에 일일 주기 잔존</td>
-</tr>
-<tr class="even">
-<td>EMD</td>
-<td>가산 (8-12개 IMF)</td>
-<td>어떤 성분이 주기인지 불명확</td>
-</tr>
-<tr class="odd">
-<td>Wavelet</td>
-<td>가산 (A4 + D1-D4)</td>
-<td>주기 에너지가 여러 레벨에 분산</td>
-</tr>
-<tr class="even">
-<td><strong>EBT</strong></td>
-<td><strong>곱셈</strong> (<span class="math inline">\(y^U \times y^P\)</span>)</td>
-<td><strong>깔끔한 2성분 분해</strong></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="figure-a1-raw-scale-분해-비교" class="slide level2">
-<h2>Figure A1: Raw Scale 분해 비교</h2>
-
-<img data-src="figs/A1_fig1.png" style="width:90.0%" class="r-stretch quarto-figure-center"><p class="caption">Raw scale 분해 비교 (서울, 2022-09-01 ~ 09-15)</p><ul>
-<li><strong>EBT</strong>: 진폭 × 주기로 깔끔하게 분해</li>
-<li><strong>STL</strong>: Residual에 일일 피크 잔존, 음수 발생</li>
-<li><strong>EMD/Wavelet</strong>: 주기 성분이 여러 term에 분산</li>
-</ul>
-</section>
-<section id="figure-a2-log-scale-곱셈-분해-비교" class="slide level2">
-<h2>Figure A2: Log Scale (곱셈) 분해 비교</h2>
-
-<img data-src="figs/A1_fig2.png" style="width:90.0%" class="r-stretch quarto-figure-center"><p class="caption">Log scale 분해 비교 (서울, 2022-09-01 ~ 09-15)</p><ul>
-<li>Log 변환 후에도 <strong>EBT만</strong> 깔끔한 2성분 분해</li>
-<li>STL/EMD/Wavelet은 여전히 주기 성분 분리 실패</li>
-</ul>
-</section>
-<section id="table-a1-non-spatial-모델과의-비교" class="slide level2">
-<h2>Table A1: Non-Spatial 모델과의 비교</h2>
-<p><strong>TCN, LSTM, CNN-LSTM</strong> (2000 epochs, 10회 반복)</p>
-<div class="columns">
-<div class="column" style="width:33%;">
-<p><strong>TCN</strong></p>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Lag</th>
-<th>F=32 MSE</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>8</td>
-<td>0.0605</td>
-</tr>
-<tr class="even">
-<td>12</td>
-<td>0.0606</td>
-</tr>
-<tr class="odd">
-<td>24</td>
-<td><strong>0.0601</strong></td>
-</tr>
-</tbody>
-</table>
-</div><div class="column" style="width:33%;">
-<p><strong>LSTM</strong></p>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Lag</th>
-<th>H=32 MSE</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>8</td>
-<td><strong>0.0841</strong></td>
-</tr>
-<tr class="even">
-<td>12</td>
-<td>0.0927</td>
-</tr>
-<tr class="odd">
-<td>24</td>
-<td>0.0995</td>
-</tr>
-</tbody>
-</table>
-</div><div class="column" style="width:33%;">
-<p><strong>CNN-LSTM</strong></p>
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Lag</th>
-<th>F=32 MSE</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>8</td>
-<td><strong>0.0975</strong></td>
-</tr>
-<tr class="even">
-<td>12</td>
-<td>0.1005</td>
-</tr>
-<tr class="odd">
-<td>24</td>
-<td>0.1008</td>
-</tr>
-</tbody>
-</table>
-</div></div>
-<div class="callout callout-warning callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Warning</strong></p>
-</div>
-<div class="callout-content">
-<p><strong>Best Non-Spatial</strong>: TCN (MSE=0.0601) vs <strong>Proposed STGNN</strong>: GConvGRU (MSE=0.0400)</p>
-<p>→ <strong>공간 상관 모델링이 필수</strong></p>
-</div>
-</div>
-</div>
-</section></section>
-<section id="감사합니다" class="title-slide slide level1 center">
-<h1>감사합니다</h1>
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>논문 정보</strong></p>
-</div>
-<div class="callout-content">
+<section id="thank-you" class="slide level2">
+<h2>Thank You</h2>
+<p><strong>Paper Information</strong></p>
 <p><strong>“Spatio-Temporal Graph Neural Networks with Elastic-Band Transform for Solar Radiation Prediction”</strong></p>
+<p><strong>Author</strong>: Guebin Choi</p>
 <p><em>CMES-Computer Modeling in Engineering &amp; Sciences</em>, 2025</p>
-</div>
-</div>
-</div>
-
+<p><strong>Contact</strong>: guebin.choi@jbnu.ac.kr</p>
 </section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-agga2021short" class="csl-entry" role="listitem">
+Agga, A., Abbou, A., Labbadi, M., &amp; El Houm, Y. (2021). Short-term self consumption PV plant power production forecasts based on hybrid CNN-LSTM, ConvLSTM models. <em>Renewable Energy</em>, <em>177</em>, 101–112.
+</div>
+<div id="ref-bai2018tcn" class="csl-entry" role="listitem">
+Bai, S., Kolter, J. Z., &amp; Koltun, V. (2018). An empirical evaluation of generic convolutional and recurrent networks for sequence modeling. <em>arXiv Preprint arXiv:1803.01271</em>.
+</div>
+<div id="ref-choi2023elastic" class="csl-entry" role="listitem">
+Choi, G., &amp; Oh, H.-S. (2023). Elastic-band transform for visualization and detection. <em>Pattern Recognition Letters</em>, <em>166</em>, 119–125.
+</div>
+<div id="ref-choi2024decomposition" class="csl-entry" role="listitem">
+Choi, G., &amp; Oh, H.-S. (2024). Decomposition via elastic-band transform. <em>Pattern Recognition Letters</em>, <em>182</em>, 76–82.
+</div>
+<div id="ref-cui2020learning" class="csl-entry" role="listitem">
+Cui, Z., Ke, R., Pu, Z., Ma, X., &amp; Wang, Y. (2020). Learning traffic as a graph: A gated graph wavelet recurrent neural network for network-scale traffic prediction. <em>Transportation Research Part C: Emerging Technologies</em>, <em>115</em>, 102620.
+</div>
+<div id="ref-hochreiter1997lstm" class="csl-entry" role="listitem">
+Hochreiter, S., &amp; Schmidhuber, J. (1997). Long short-term memory. <em>Neural Computation</em>, <em>9</em>(8), 1735–1780.
+</div>
+<div id="ref-khodayar2021spatio" class="csl-entry" role="listitem">
+Khodayar, M., Mohammadi, S., Khodayar, M. E., Wang, J., &amp; Liu, G. (2021). Spatiotemporal graph neural network for performance prediction of photovoltaic power systems. <em>Proceedings of the AAAI Conference on Artificial Intelligence</em>, <em>35</em>, 15323–15330.
+</div>
+<div id="ref-lee2021short" class="csl-entry" role="listitem">
+Lee, D., Jeong, J. W., &amp; Choi, G. (2021). Short term prediction of PV power output generation using hierarchical probabilistic model. <em>Energies</em>, <em>14</em>(10), 2822.
+</div>
+<div id="ref-li2017diffusion" class="csl-entry" role="listitem">
+Li, Y., Yu, R., Shahabi, C., &amp; Liu, Y. (2017). Diffusion convolutional recurrent neural network: Data-driven traffic forecasting. <em>arXiv Preprint arXiv:1707.01926</em>.
+</div>
+<div id="ref-lim2021temporal" class="csl-entry" role="listitem">
+Lim, B., Arık, S. Ö., Loeff, N., &amp; Pfister, T. (2021). Temporal fusion transformers for interpretable multi-horizon time series forecasting. <em>International Journal of Forecasting</em>, <em>37</em>(4), 1748–1764.
+</div>
+<div id="ref-digital_typhoon" class="csl-entry" role="listitem">
+National Institute of Informatics. (2022). <em>Digital typhoon: Typhoon 202211 (HINNAMNOR)</em>. <a href="https://agora.ex.nii.ac.jp/digital-typhoon/summary/wnp/s/202211.html.en" class="uri">https://agora.ex.nii.ac.jp/digital-typhoon/summary/wnp/s/202211.html.en</a>.
+</div>
+<div id="ref-rozemberczki2021pytorch" class="csl-entry" role="listitem">
+Rozemberczki, B., Scherer, P., He, Y., Panagopoulos, G., Riedel, A., Astefanoaei, M., Kiss, O., Beres, F., Lopez, G., Collignon, N., et al. (2021). Pytorch geometric temporal: Spatiotemporal signal processing with neural machine learning models. <em>Proceedings of the 30th ACM International Conference on Information &amp; Knowledge Management</em>, 4564–4573.
+</div>
+<div id="ref-seo2018structured" class="csl-entry" role="listitem">
+Seo, Y., Defferrard, M., Vandergheynst, P., &amp; Bresson, X. (2018). Structured sequence modeling with graph convolutional recurrent networks. <em>International Conference on Neural Information Processing</em>, 362–373.
+</div>
+<div id="ref-wu2020connecting" class="csl-entry" role="listitem">
+Wu, Z., Pan, S., Long, G., Jiang, J., Chang, X., &amp; Zhang, C. (2020). Connecting the dots: Multivariate time series forecasting with graph neural networks. <em>Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining</em>, 753–763.
+</div>
+<div id="ref-wu2019graph" class="csl-entry" role="listitem">
+Wu, Z., Pan, S., Long, G., Jiang, J., &amp; Zhang, C. (2019). Graph wavenet for deep spatial-temporal graph modeling. <em>arXiv Preprint arXiv:1906.00121</em>.
+</div>
+<div id="ref-yu2017spatio" class="csl-entry" role="listitem">
+Yu, B., Yin, H., &amp; Zhu, Z. (2017). Spatio-temporal graph convolutional networks: A deep learning framework for traffic forecasting. <em>arXiv Preprint arXiv:1709.04875</em>.
+</div>
+<div id="ref-zhao2019t" class="csl-entry" role="listitem">
+Zhao, L., Song, Y., Zhang, C., Liu, Y., Wang, P., Lin, T., Deng, M., &amp; Li, H. (2019). T-GCN: A temporal graph convolutional network for traffic prediction. <em>IEEE Transactions on Intelligent Transportation Systems</em>, <em>21</em>(9), 3848–3858.
+</div>
+</div>
+</section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>EBT + STGNN for Solar Forecasting</p>
+
 </div>
 </div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="index_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="index_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="index_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="index_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="index_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="index_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="index_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="index_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="ebtsolar_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
@@ -1065,7 +1546,7 @@
         previewLinks: false,
 
         // Transition style (none/fade/slide/convex/concave/zoom)
-        transition: 'slide',
+        transition: 'none',
 
         // Transition speed (default/fast/slow)
         transitionSpeed: 'default',
@@ -1093,7 +1574,7 @@
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
