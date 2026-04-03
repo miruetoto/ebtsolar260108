@@ -560,6 +560,6 @@ $$\mathbf{X} \star_{\mathcal{G}} \mathbf{g} = \sum_{j=0}^{J-1} \left( \theta_j \
 
 *CMES-Computer Modeling in Engineering & Sciences*, 2025
 
-**Contact**: guebin.choi@jbnu.ac.kr
+**Contact**: guebin@jbnu.ac.kr
 
 ## References
